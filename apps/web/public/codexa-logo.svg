@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 40" fill="none">
+  <defs>
+    <linearGradient id="codexa_full_cyan" x1="4" y1="4" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="codexa_full_glow" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#6366F1" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon Glyph -->
+  <g transform="translate(0, 0)">
+    <rect x="2" y="2" width="36" height="36" rx="9" fill="url(#codexa_full_glow)" stroke="#38BDF8" stroke-opacity="0.3" stroke-width="1.2"/>
+    <path d="M26 11H15C12.2386 11 10 13.2386 10 16V24C10 26.7614 12.2386 29 15 29H26" stroke="url(#codexa_full_cyan)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M16 16L19.5 20L16 24" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="23.5" cy="20" r="1.5" fill="#38BDF8"/>
+  </g>
+
+  <!-- Wordmark "CODEXA" -->
+  <text x="48" y="26" font-family="'JetBrains Mono', monospace, sans-serif" font-size="16" font-weight="800" letter-spacing="3" fill="currentColor">
+    CODEXA
+  </text>
+</svg>

@@ -1,0 +1,25 @@
+{
+  "name": "codexa-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Codexa - AI-powered general-purpose technical learning platform",
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "workers/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "dev": "concurrently \"npm --prefix apps/api run dev\" \"npm --prefix apps/web run dev\" \"npm --prefix workers/executor run dev\"",
+    "dev:api": "npm --prefix apps/api run dev",
+    "dev:web": "npm --prefix apps/web run dev",
+    "dev:worker": "npm --prefix workers/executor run dev",
+    "seed": "npm --prefix apps/api run seed",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "typescript": "^5.7.3"
+  }
+}
