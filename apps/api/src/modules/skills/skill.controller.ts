@@ -7,8 +7,23 @@ export const skillsRouter = Router();
 
 skillsRouter.get('/', async (req: Request, res: Response) => {
   try {
-    const skills = await SkillModel.find();
-    res.json(skills);
+    const skills = await SkillModel.find().sort({ category: 1, name: 1 });
+    const formatted = skills.map((s) => ({
+      _id: s._id.toString(),
+      id: s._id.toString(),
+      slug: s.slug,
+      skillSlug: s.slug,
+      name: s.name,
+      skillName: s.name,
+      category: s.category,
+      description: s.description,
+      prerequisites: s.prerequisites,
+      level: 'CORE TRACK',
+      masteryScore: 0,
+      evidenceCount: 0,
+      isAssessed: false,
+    }));
+    res.json(formatted);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }

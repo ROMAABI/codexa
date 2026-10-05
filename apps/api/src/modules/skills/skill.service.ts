@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import { SkillModel, ISkill } from '../../database/models/Skill';
 import { UserSkillModel, IUserSkill } from '../../database/models/UserSkill';
+import { ProgressModel } from '../../database/models/Progress';
+import { CourseModel } from '../../database/models/Course';
 import { SkillLevel } from '@codexa/shared';
 
 export class SkillService {
@@ -33,17 +35,18 @@ export class SkillService {
       });
     }
 
+    const uId = new mongoose.Types.ObjectId(userId);
     let userSkill = await UserSkillModel.findOne({
-      userId: new mongoose.Types.ObjectId(userId),
+      userId: uId,
       skillSlug,
     });
 
     if (!userSkill) {
       userSkill = new UserSkillModel({
-        userId: new mongoose.Types.ObjectId(userId),
+        userId: uId,
         skillId: skill._id,
         skillSlug,
-        level: 'NOVICE',
+        level: this.calculateLevel(score),
         masteryScore: score,
         evidenceCount: 1,
         lastAssessedAt: new Date(),
@@ -61,6 +64,7 @@ export class SkillService {
     } else {
       userSkill.evidenceCount += 1;
       userSkill.lastAssessedAt = new Date();
+      userSkill.skillId = skill._id;
       userSkill.history.push({
         sourceType,
         sourceId,
@@ -86,15 +90,92 @@ export class SkillService {
   }
 
   static async getUserSkills(userId: string) {
-    return UserSkillModel.find({
-      userId: new mongoose.Types.ObjectId(userId),
-    }).sort({ masteryScore: -1 });
+    const uId = new mongoose.Types.ObjectId(userId);
+    const userSkills = await UserSkillModel.find({ userId: uId }).sort({ masteryScore: -1 });
+
+    const allSkills = await SkillModel.find();
+    const skillMap = new Map<string, ISkill>();
+    allSkills.forEach((s) => {
+      skillMap.set(s.slug, s);
+    });
+
+    // Check if user has enrolled courses with progress but missing skills
+    if (userSkills.length === 0) {
+      const progresses = await ProgressModel.find({ userId: uId, percentComplete: { $gt: 0 } }).populate('courseId');
+      for (const prog of progresses) {
+        const course = prog.courseId as any;
+        if (course && Array.isArray(course.skillsCovered)) {
+          for (const sSlug of course.skillsCovered) {
+            const matchedSkill = skillMap.get(sSlug);
+            if (matchedSkill) {
+              const estimatedScore = Math.min(100, Math.round(prog.percentComplete * 0.9));
+              await this.recordEvidence({
+                userId,
+                skillSlug: sSlug,
+                sourceType: 'QUIZ',
+                sourceId: course.slug || 'course-progress',
+                score: estimatedScore,
+                passed: estimatedScore >= 50,
+              }).catch(() => {});
+            }
+          }
+        }
+      }
+    }
+
+    // Re-query after potential auto-sync
+    const latestUserSkills = await UserSkillModel.find({ userId: uId }).sort({ masteryScore: -1 });
+
+    return latestUserSkills.map((us) => {
+      const matched = skillMap.get(us.skillSlug);
+      return {
+        _id: us._id.toString(),
+        id: us._id.toString(),
+        skillSlug: us.skillSlug,
+        slug: us.skillSlug,
+        skillName: matched?.name || us.skillSlug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+        name: matched?.name || us.skillSlug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+        category: matched?.category || 'LANGUAGE',
+        description: matched?.description || '',
+        level: us.level,
+        masteryScore: us.masteryScore,
+        evidenceCount: us.evidenceCount,
+        lastAssessedAt: us.lastAssessedAt,
+        weakAreas: us.weakAreas || [],
+        isAssessed: true,
+      };
+    });
   }
 
   static async getWeakSkills(userId: string, threshold = 60) {
-    return UserSkillModel.find({
-      userId: new mongoose.Types.ObjectId(userId),
+    const uId = new mongoose.Types.ObjectId(userId);
+    const weakSkills = await UserSkillModel.find({
+      userId: uId,
       masteryScore: { $lt: threshold },
     }).sort({ masteryScore: 1 });
+
+    const allSkills = await SkillModel.find();
+    const skillMap = new Map<string, ISkill>();
+    allSkills.forEach((s) => skillMap.set(s.slug, s));
+
+    return weakSkills.map((ws) => {
+      const matched = skillMap.get(ws.skillSlug);
+      return {
+        _id: ws._id.toString(),
+        id: ws._id.toString(),
+        skillSlug: ws.skillSlug,
+        slug: ws.skillSlug,
+        skillName: matched?.name || ws.skillSlug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+        name: matched?.name || ws.skillSlug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+        category: matched?.category || 'LANGUAGE',
+        description: matched?.description || '',
+        level: ws.level,
+        masteryScore: ws.masteryScore,
+        evidenceCount: ws.evidenceCount,
+        lastAssessedAt: ws.lastAssessedAt,
+        weakAreas: ws.weakAreas || [],
+        isAssessed: true,
+      };
+    });
   }
 }

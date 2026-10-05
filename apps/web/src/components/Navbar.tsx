@@ -68,8 +68,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               to="/catalog"
               className={`flex items-center gap-1.5 h-8 px-3 rounded-lg transition ${
                 isActive('/catalog')
-                  ? 'bg-surface-elevated text-accent font-bold border border-subtle'
-                  : 'text-secondary hover:text-primary hover:bg-surface-elevated/50'
+                  ? 'bg-surface-elevated text-accent font-semibold border border-subtle'
+                  : 'text-secondary hover:text-primary hover:bg-surface-elevated/50 font-medium'
               }`}
             >
               <Compass className="h-3.5 w-3.5" />
@@ -82,8 +82,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   to="/dashboard"
                   className={`flex items-center gap-1.5 h-8 px-3 rounded-lg transition ${
                     isActive('/dashboard')
-                      ? 'bg-surface-elevated text-accent font-bold border border-subtle'
-                      : 'text-secondary hover:text-primary hover:bg-surface-elevated/50'
+                      ? 'bg-surface-elevated text-accent font-semibold border border-subtle'
+                      : 'text-secondary hover:text-primary hover:bg-surface-elevated/50 font-medium'
                   }`}
                 >
                   <LayoutDashboard className="h-3.5 w-3.5" />
@@ -94,8 +94,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   to="/profile"
                   className={`flex items-center gap-1.5 h-8 px-3 rounded-lg transition ${
                     isActive('/profile')
-                      ? 'bg-surface-elevated text-accent font-bold border border-subtle'
-                      : 'text-secondary hover:text-primary hover:bg-surface-elevated/50'
+                      ? 'bg-surface-elevated text-accent font-semibold border border-subtle'
+                      : 'text-secondary hover:text-primary hover:bg-surface-elevated/50 font-medium'
                   }`}
                 >
                   <User className="h-3.5 w-3.5" />
@@ -107,8 +107,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                     to="/admin"
                     className={`flex items-center gap-1.5 h-8 px-3 rounded-lg transition ${
                       isActive('/admin')
-                        ? 'bg-warning/15 text-warning font-bold border border-warning/30'
-                        : 'text-secondary hover:text-warning hover:bg-warning/10'
+                        ? 'bg-warning/15 text-warning font-semibold border border-warning/30'
+                        : 'text-secondary hover:text-warning hover:bg-warning/10 font-medium'
                     }`}
                   >
                     <ShieldAlert className="h-3.5 w-3.5" />
@@ -263,7 +263,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </Link>
               <Link
                 to="/register"
-                className="btn-pill-primary h-8 px-3.5 text-xs flex items-center rounded-lg"
+                className="btn btn-primary h-8 px-3.5 text-xs flex items-center rounded-lg"
               >
                 JOIN CODEXA
               </Link>

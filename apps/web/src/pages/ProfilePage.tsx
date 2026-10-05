@@ -73,38 +73,38 @@ export const ProfilePage: React.FC = () => {
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-primary tracking-tight">
                   {user?.name}
                 </h1>
-                <span className="mono-tag text-[10px]">
-                  {user?.role || 'DEVELOPER'}
+                <span className="tag-badge text-xs">
+                  {user?.role || 'Developer'}
                 </span>
               </div>
-              <p className="text-xs text-muted font-mono flex flex-wrap items-center gap-2">
+              <p className="text-xs text-muted flex flex-wrap items-center gap-2">
                 <span className="text-primary">{user?.email}</span>
                 <span>•</span>
                 <span className="text-secondary">
-                  FOCUS: {user?.preferences?.learningGoal || 'Full Stack Software Engineer'}
+                  Focus: {user?.preferences?.learningGoal || 'Full Stack Software Engineer'}
                 </span>
               </p>
             </div>
           </div>
 
           {/* Quick Metrics */}
-          <div className="flex items-center gap-3 font-mono">
+          <div className="flex items-center gap-3">
             <div className="craft-card px-5 py-3 text-center">
               <div className="flex items-center justify-center gap-1.5 text-xs text-amber-400 font-bold">
                 <Flame className="h-3.5 w-3.5" />
-                <span>STREAK</span>
+                <span>Streak</span>
               </div>
               <div className="text-xl font-bold text-primary mt-0.5">{user?.streak || 0}d</div>
-              <span className="text-[10px] text-muted block mt-0.5">Consecutive</span>
+              <span className="text-xs text-muted block mt-0.5">Consecutive</span>
             </div>
 
             <div className="craft-card px-5 py-3 text-center">
               <div className="flex items-center justify-center gap-1.5 text-xs text-sky-400 font-bold">
                 <Zap className="h-3.5 w-3.5" />
-                <span>REPUTATION</span>
+                <span>Reputation</span>
               </div>
               <div className="text-xl font-bold text-primary mt-0.5">{user?.xp || 0} XP</div>
-              <span className="text-[10px] text-muted block mt-0.5">Calibrated</span>
+              <span className="text-xs text-muted block mt-0.5">Calibrated</span>
             </div>
           </div>
         </div>
@@ -113,14 +113,14 @@ export const ProfilePage: React.FC = () => {
       {/* Appearance & Theme Settings Section */}
       <div className="craft-card p-6 sm:p-8 space-y-4">
         <div className="space-y-1">
-          <span className="kicker">
-            › SYSTEM PREFERENCES
+          <span className="text-xs font-semibold text-accent block">
+            System Preferences
           </span>
           <h2 className="text-base font-bold text-primary flex items-center gap-2">
             <Palette className="h-4 w-4 text-primary" />
             Appearance & Theme Preferences
           </h2>
-          <p className="text-xs text-muted font-sans">
+          <p className="text-xs text-muted">
             Choose your preferred visual mode or let Codexa automatically match your operating system theme.
           </p>
         </div>
@@ -135,10 +135,10 @@ export const ProfilePage: React.FC = () => {
         <div className="lg:col-span-2 space-y-6">
           <div className="space-y-1">
             <div className="flex items-center justify-between">
-              <span className="kicker">
-                › VERIFIABLE SKILL CONFIDENCE PROFILE
+              <span className="text-xs font-semibold text-accent block">
+                Verifiable Skill Confidence Profile
               </span>
-              <span className="text-[11px] font-mono text-muted">EMA CALIBRATED</span>
+              <span className="text-xs text-muted">EMA Calibrated</span>
             </div>
             <p className="text-xs text-muted font-sans">
               Confidence scores are dynamically recalculated based on your performance in quizzes and isolated sandbox coding challenges.
@@ -153,11 +153,11 @@ export const ProfilePage: React.FC = () => {
                   className="craft-card-interactive p-5 space-y-3"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="kicker text-[10px]">
-                      › {s.category || 'SKILL'}
+                    <span className="text-xs text-muted font-medium">
+                      {s.category || 'Skill'}
                     </span>
                     <span
-                      className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded border font-semibold ${getSkillBadgeColor(
+                      className={`text-xs uppercase px-2 py-0.5 rounded border font-semibold ${getSkillBadgeColor(
                         s.level
                       )}`}
                     >
@@ -166,15 +166,15 @@ export const ProfilePage: React.FC = () => {
                   </div>
 
                   <div>
-                    <h3 className="text-sm font-bold text-primary">{s.skillSlug}</h3>
-                    <p className="text-[11px] font-mono text-muted mt-0.5">
-                      {s.evidenceCount} verified checkpoints
+                    <h3 className="text-sm font-bold text-primary">{s.skillName || s.name || s.skillSlug}</h3>
+                    <p className="text-xs text-muted mt-0.5">
+                      {s.evidenceCount} verified checkpoint{s.evidenceCount === 1 ? '' : 's'}
                     </p>
                   </div>
 
-                  <div className="space-y-1.5 font-mono">
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-muted">MASTERY</span>
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted">Mastery</span>
                       <span className="text-primary font-bold">{s.masteryScore}%</span>
                     </div>
                     <div className="h-1.5 w-full rounded-full bg-surface-elevated overflow-hidden">
@@ -187,7 +187,7 @@ export const ProfilePage: React.FC = () => {
                 </div>
               ))
             ) : (
-              <div className="sm:col-span-2 p-8 text-center text-muted text-xs font-mono border border-dashed border-subtle rounded-xl craft-card space-y-2">
+              <div className="sm:col-span-2 p-8 text-center text-muted text-xs border border-dashed border-subtle rounded-xl craft-card space-y-2">
                 <Info className="h-5 w-5 text-primary mx-auto" />
                 <p className="font-bold text-primary">No skill evidence recorded yet</p>
                 <p>Complete quizzes and coding challenges in your enrolled courses to build your verified skill graph.</p>
@@ -197,26 +197,26 @@ export const ProfilePage: React.FC = () => {
 
           {/* Active Projects */}
           <div className="space-y-4 pt-4">
-            <span className="kicker block">
-              › CAPSTONE PROJECTS
+            <span className="text-xs font-semibold text-accent block">
+              Capstone Projects
             </span>
 
             <div className="craft-card p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="space-y-1">
-                <span className="kicker text-[10px]">
-                  › MERN STACK CAPSTONE
+                <span className="text-xs text-muted block font-medium">
+                  MERN Stack Capstone
                 </span>
                 <h3 className="text-sm font-bold text-primary">Full Stack Collaborative Task Platform</h3>
-                <p className="text-xs text-secondary font-sans">
+                <p className="text-xs text-secondary">
                   JWT authentication, MongoDB schema models, REST API security guards, and React frontend.
                 </p>
               </div>
 
               <Link
                 to="/projects/task-management-platform"
-                className="btn-pill-primary text-xs px-4 py-2 inline-flex items-center gap-1.5 shrink-0"
+                className="btn btn-primary text-xs px-4 py-2 inline-flex items-center gap-1.5 shrink-0"
               >
-                <span>OPEN PROJECT IDE</span>
+                <span>Open Project IDE</span>
                 <span>↗</span>
               </Link>
             </div>
@@ -226,14 +226,14 @@ export const ProfilePage: React.FC = () => {
         {/* Right 1 Col: Enrolled Curricula */}
         <div className="space-y-6">
           <div className="space-y-1">
-            <span className="kicker block">
-              › ACTIVE TRACKS
+            <span className="text-xs font-semibold text-accent block">
+              Active Tracks
             </span>
-            <h2 className="text-sm font-bold font-mono text-primary flex items-center gap-2">
+            <h2 className="text-sm font-bold text-primary flex items-center gap-2">
               <BookOpen className="h-4 w-4 text-primary" />
               My Learning Tracks
             </h2>
-            <p className="text-xs text-muted font-sans">Courses currently in progress</p>
+            <p className="text-xs text-muted">Courses currently in progress</p>
           </div>
 
           <div className="space-y-3">
@@ -246,9 +246,9 @@ export const ProfilePage: React.FC = () => {
                     key={enr._id}
                     className="craft-card-interactive p-5 space-y-3"
                   >
-                    <div className="flex items-center justify-between font-mono">
-                      <span className="kicker text-[10px]">
-                        › {c.level || 'BEGINNER'}
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted font-medium">
+                        {c.level || 'Beginner'}
                       </span>
                       <span className="text-xs text-primary font-bold">
                         {enr.percentComplete || 0}%
@@ -266,22 +266,22 @@ export const ProfilePage: React.FC = () => {
 
                     <Link
                       to={`/courses/${c.slug}`}
-                      className="btn-pill w-full text-center text-xs block py-1.5 mt-2"
+                      className="btn btn-secondary w-full text-center text-xs block py-1.5 mt-2"
                     >
-                      RESUME TRACK
+                      Resume Track
                     </Link>
                   </div>
                 );
               })
             ) : (
-              <div className="p-6 text-center text-muted text-xs font-mono border border-dashed border-subtle rounded-xl craft-card space-y-3">
+              <div className="p-6 text-center text-muted text-xs border border-dashed border-subtle rounded-xl craft-card space-y-3">
                 <BookOpen className="h-5 w-5 text-primary mx-auto" />
                 <p>No active courses yet.</p>
                 <Link
                   to="/catalog"
-                  className="btn-pill-primary text-xs px-4 py-1.5 inline-flex items-center gap-1.5"
+                  className="btn btn-primary text-xs px-4 py-1.5 inline-flex items-center gap-1.5"
                 >
-                  <span>BROWSE CATALOG</span>
+                  <span>Browse Catalog</span>
                   <span>↗</span>
                 </Link>
               </div>

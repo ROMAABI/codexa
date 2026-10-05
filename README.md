@@ -14,6 +14,8 @@ MERN / Web Development is the first vertical slice. The seed now ships 20+ cours
 - Evidence-based skills (EMA over quizzes, challenges, milestones — video watched ≠ mastery)
 - Explainable next-activity recommendations, weak-skill detection
 - AI mentor drawer with RAG over approved course notes + Response Guard anti-cheat
+- Full IDE project workspaces (file explorer, tabs, integrated terminal, test runner, web preview) with file checkpoints and milestone submissions
+- AI intent classification (greetings, ambiguous/short queries) with clarification responses before RAG
 - Capstone multi-file projects, verified external resources (docs + YouTube)
 - Auth (JWT + Google Identity Services), per-student isolation, rate limiting, analytics events
 - Light / dark / system theme, Cmd+K global search, responsive Tailwind UI
@@ -52,6 +54,8 @@ Core rules enforced in code:
 | Data | MongoDB `mongodb://127.0.0.1:27017`, Redis `127.0.0.1:6379` |
 | AI | NVIDIA NIM (`integrate.api.nvidia.com/v1`, `nemotron-3-ultra-550b-a55b`) with local deterministic provider fallback |
 | Tests | Jest 29 + supertest + ts-jest, `tsx` runner, `concurrently` dev orchestration |
+| Shared | `@codexa/shared` TypeScript contracts (roles, skills, activities, execution, project/terminal DTOs) |
+| Root infra | `axios`, `helmet`, `morgan`, `cookie-parser`, `uuid`, `ws` (hardening, logging, realtime/terminal infra) |
 
 ## Repository Structure
 
@@ -59,15 +63,17 @@ Core rules enforced in code:
 codexa/
 ├── apps/api/src/
 │   ├── app.ts / index.ts / config/env.ts
-│   ├── database/models/ (17 models: User, Course, Module, Lesson, Activity,
+│   ├── database/models/ (19 models: User, Course, Module, Lesson, Activity,
 │   │   Assessment, AssessmentAttempt, Challenge, Submission, Skill, UserSkill,
-│   │   Progress, Project, Resource, AIConversation, AnalyticsEvent)
+│   │   Progress, Project, ProjectWorkspace, ProjectSubmission, Resource,
+│   │   AIConversation, AnalyticsEvent)
 │   ├── database/seeds/courses/ (web-development, programming-languages,
 │   │   databases, ai-ml, devops-systems) + skills, resources, projects
 │   ├── database/seed.ts + connection.ts
 │   ├── middleware/rate-limiter.ts
 │   ├── modules/ (auth, courses, learning, assessments, challenges, execution,
-│   │   skills, recommendations, ai, projects, resources, analytics)
+│   │   skills, recommendations, ai (+intent.classifier), projects (+project.service),
+│   │   resources, analytics)
 │   └── __tests__/ (vertical-slice, security-and-integrity, lesson-content-system)
 ├── apps/web/src/
 │   ├── pages/ (Dashboard, Catalog, CourseDetail, LessonWorkspace,
@@ -77,6 +83,8 @@ codexa/
 │   │   DebuggingChallengeView, ReferenceView, GoogleAuthButton, ThemeSelector)
 │   ├── components/ui/ (CourseCard, CourseThumbnail, CourseVisual, ProjectCard,
 │   │   SkillCard, ContentRail, Skeletons, EmptyState, CompletionModal, CodexaLogo)
+│   ├── components/ide/ (FileExplorer, EditorTabs, IntegratedTerminal,
+│   │   TestRunnerPanel, WebPreview — project workspace IDE)
 │   ├── context/ (AuthContext, ThemeContext), hooks/, api/client.ts
 │   ├── App.tsx, main.tsx, index.css (Craft design tokens)
 ├── workers/executor/src/index.ts (BullMQ worker)
@@ -84,7 +92,7 @@ codexa/
 ├── package.json (npm workspaces: apps/*, workers/*)
 ```
 
-Note: `packages/shared` is referenced by `@codexa/shared` alias in `apps/web/vite.config.ts` but is not present in this checkout. API imports its types from it in `sandbox.runner.ts`. If `npm install` fails on workspace resolution, check git history or re-add the shared contracts package.
+`packages/shared` holds the `@codexa/shared` contracts imported by API and web (roles, skills, activities, execution, project/terminal DTOs). `packages/shared/dist/` is build output and stays gitignored. Root `node_modules/` is install output and stays gitignored.
 
 ## Prerequisites
 
@@ -161,6 +169,8 @@ Base: `/api`. Auth: `Authorization: Bearer <JWT>`.
 | GET | `/recommendations/next` | user | explainable next activity |
 | POST | `/ai/ask` | user (rate-limited) | RAG mentor, Guard-filtered |
 | GET | `/projects`, `/projects/:slug` | no/user | capstone projects |
+| GET / PUT | `/projects/:slug/workspace` | optional auth | IDE workspace load + autosave (files, checkpoints, milestones) |
+| POST | `/projects/:slug/run`, `/projects/:slug/submit`, `/projects/:slug/terminal`, `/projects/:slug/reset` | user (rate-limited) | multi-file run, milestone submit, terminal exec, workspace reset |
 | GET/POST/PUT/DELETE | `/resources`, `/resources/:id`, `/resources/admin` | mixed (writes: admin) | verified links |
 | POST / GET | `/analytics/track`, `/analytics/admin/summary` | user / admin | events + admin rollup |
 
@@ -176,6 +186,7 @@ Error shape: `{ error: string }` via global handler in `apps/api/src/app.ts:39-4
 - Limits: 5000 ms timeout → `TIMEOUT`, 128 MB, 64 KB stdout/stderr cap, 1 MB kill threshold, infinite-loop safe (process-group SIGKILL).
 - Result: `results.json` preferred, stdout markers fallback; `{ PASSED | FAILED | TIMEOUT | ERROR }` + per-test items.
 - If `bwrap` missing: returns `ERROR` — unsandboxed execution is prohibited, never falls through.
+- Multi-file projects: `writeProjectFiles` / `readProjectFiles`, `executeMultiFileProject`, `executeProjectEvaluation` (milestone tests), sandboxed `executeTerminal`.
 
 ## AI Gateway
 
@@ -185,6 +196,7 @@ Error shape: `{ error: string }` via global handler in `apps/api/src/app.ts:39-4
 - `context.builder.ts` + `rag.engine.ts` — approved lesson notes only
 - `response.guard.ts` — prompt-injection redaction, assessment answer interception, hint-mode code withholding
 - `ai.service.ts` / `ai.controller.ts` — `POST /api/ai` orchestration
+- `intent.classifier.ts` — greeting / ambiguous / short-query detection with clarification responses before RAG
 
 Verify with: `npx tsx scripts/verify-ai-connection.ts`
 
@@ -198,6 +210,7 @@ Routes in `apps/web/src/App.tsx`:
 - `ThemeContext` — `light | dark | system`, `localStorage:codexa_theme_preference`, `.dark` class + FOUC guard in `index.html`.
 - `index.css` + `tailwind.config.js` — Craft tokens via CSS vars (`--bg-main`, `--bg-surface`, `--accent`, …), `craft-card`, `btn-pill`, `input-field`, `code-frame`, mono kickers.
 - Fonts: Inter + JetBrains Mono via Google Fonts. Default `<html class="dark">`.
+- `src/components/ide/` — FileExplorer, EditorTabs, IntegratedTerminal, TestRunnerPanel, WebPreview (project workspaces, rebuilt `ProjectWorkspacePage`).
 
 ## Tests & Verification Scripts
 

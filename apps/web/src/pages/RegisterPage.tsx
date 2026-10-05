@@ -48,39 +48,36 @@ export const RegisterPage: React.FC = () => {
         {/* Left: Platform Value Proposition */}
         <div className="space-y-6 hidden md:block pr-4">
           <div className="space-y-3">
-            <span className="kicker block">
-              › 01 / ONBOARDING · PRACTITIONER PATH
-            </span>
             <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-primary">
               Build your technical track record.
             </h1>
-            <p className="text-xs lg:text-sm text-secondary leading-relaxed font-sans">
+            <p className="text-xs lg:text-sm text-secondary leading-relaxed">
               Join engineers leveling up with hands-on practice, verified masterclasses, and real-time guidance from our anti-spoiler AI Mentor.
             </p>
           </div>
 
           <div className="space-y-2.5 pt-2">
             <div className="craft-card p-3 flex items-start gap-3.5">
-              <span className="step-index mt-0.5">01</span>
+              <span className="text-xs font-semibold text-accent mt-0.5 shrink-0">01</span>
               <div>
-                <h4 className="text-xs font-bold text-primary font-mono uppercase">Industry Curricula</h4>
-                <p className="text-[11px] text-muted font-sans">Full-stack, backend architecture, algorithms, and cloud systems</p>
+                <h4 className="text-xs font-semibold text-primary">Industry Curricula</h4>
+                <p className="text-xs text-muted">Full-stack, backend architecture, algorithms, and cloud systems</p>
               </div>
             </div>
 
             <div className="craft-card p-3 flex items-start gap-3.5">
-              <span className="step-index mt-0.5">02</span>
+              <span className="text-xs font-semibold text-accent mt-0.5 shrink-0">02</span>
               <div>
-                <h4 className="text-xs font-bold text-primary font-mono uppercase">Monaco Sandbox</h4>
-                <p className="text-[11px] text-muted font-sans">Write and run code in isolated sandboxes directly in your browser</p>
+                <h4 className="text-xs font-semibold text-primary">Monaco Sandbox</h4>
+                <p className="text-xs text-muted">Write and run code in isolated sandboxes directly in your browser</p>
               </div>
             </div>
 
             <div className="craft-card p-3 flex items-start gap-3.5">
-              <span className="step-index mt-0.5">03</span>
+              <span className="text-xs font-semibold text-accent mt-0.5 shrink-0">03</span>
               <div>
-                <h4 className="text-xs font-bold text-primary font-mono uppercase">NVIDIA NIM AI Mentor</h4>
-                <p className="text-[11px] text-muted font-sans">Socratic debugging hints powered by NVIDIA NIM without spoiling answers</p>
+                <h4 className="text-xs font-semibold text-primary">NVIDIA NIM AI Mentor</h4>
+                <p className="text-xs text-muted">Socratic debugging hints powered by NVIDIA NIM without spoiling answers</p>
               </div>
             </div>
           </div>
@@ -92,7 +89,6 @@ export const RegisterPage: React.FC = () => {
             <div className="flex items-center md:justify-start justify-center mb-1">
               <CodexaLogo size="sm" />
             </div>
-            <span className="kicker block">› ONBOARDING</span>
             <h2 className="text-2xl font-bold tracking-tight text-primary">Create your Codexa Account</h2>
             <p className="text-xs text-muted">
               Start learning with interactive challenges and calibrated feedback
@@ -106,60 +102,60 @@ export const RegisterPage: React.FC = () => {
             {/* Subtle Divider */}
             <div className="relative flex items-center justify-center my-2">
               <div className="w-full border-t border-slate-200/80 dark:border-white/10" />
-              <span className="absolute px-3 bg-surface dark:bg-[#0c121e] text-[10px] font-mono uppercase text-muted tracking-widest">
+              <span className="absolute px-3 bg-surface dark:bg-[#0c121e] text-xs text-muted">
                 or with email
               </span>
             </div>
 
             <form onSubmit={handleRegister} className="space-y-4">
               {error && (
-                <div className="p-3 rounded-lg bg-danger/10 border border-danger/30 text-xs text-danger font-mono animate-fade-in">
+                <div className="p-3 rounded-lg bg-danger/10 border border-danger/30 text-xs text-danger animate-fade-in">
                   {error}
                 </div>
               )}
 
               <div className="space-y-1.5">
-                <label className="text-xs font-mono font-semibold text-secondary uppercase">Full Name</label>
+                <label className="text-xs font-semibold text-secondary">Full Name</label>
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="input-field font-mono"
+                  className="input-field"
                   placeholder="Alex Morgan"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-mono font-semibold text-secondary uppercase">Email Address</label>
+                <label className="text-xs font-semibold text-secondary">Email Address</label>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="input-field font-mono"
+                  className="input-field"
                   placeholder="alex@example.com"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-mono font-semibold text-secondary uppercase">Password</label>
+                <label className="text-xs font-semibold text-secondary">Password</label>
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="input-field font-mono"
+                  className="input-field"
                   placeholder="••••••••"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-mono font-semibold text-secondary uppercase">Primary Learning Goal</label>
+                <label className="text-xs font-semibold text-secondary">Primary Learning Goal</label>
                 <select
                   value={learningGoal}
                   onChange={(e) => setLearningGoal(e.target.value)}
-                  className="input-field font-mono text-xs"
+                  className="input-field text-xs"
                 >
                   <option value="Full Stack Software Engineer">Full Stack Software Engineer</option>
                   <option value="Backend Systems Engineer">Backend Systems Engineer</option>
@@ -171,15 +167,15 @@ export const RegisterPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="btn-pill-primary w-full py-2.5 text-xs font-bold inline-flex items-center justify-center gap-2"
+                className="btn btn-primary w-full py-2.5 text-xs font-bold inline-flex items-center justify-center gap-2"
               >
-                <span>{loading ? 'CREATING ACCOUNT...' : 'BEGIN LEARNING'}</span>
+                <span>{loading ? 'Creating account...' : 'Begin Learning'}</span>
                 <ArrowRight className="h-3.5 w-3.5" />
               </button>
             </form>
           </div>
 
-          <p className="text-center text-xs text-muted font-mono">
+          <p className="text-center text-xs text-muted">
             Already have an account?{' '}
             <Link to="/login" className="text-primary underline font-semibold transition">
               Sign in

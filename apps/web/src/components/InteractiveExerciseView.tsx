@@ -99,7 +99,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
       {/* Instructions Card */}
       <div className="card p-5 space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="eyebrow">
+          <h3 className="text-xs font-semibold text-primary">
             Exercise Instructions
           </h3>
           <span className="chip font-mono text-[10px]">
@@ -196,7 +196,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
         {result && (
           <div className="p-4 border-t border-subtle bg-surface space-y-3 font-mono text-xs">
             <div className="flex items-center justify-between">
-              <span className="eyebrow">
+              <span className="text-xs font-semibold text-primary">
                 Exercise Validation Feedback
               </span>
               <span

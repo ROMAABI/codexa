@@ -191,7 +191,7 @@ export const DebuggingChallengeView: React.FC<DebuggingChallengeViewProps> = ({
         {result && (
           <div className="p-4 border-t border-subtle bg-surface space-y-3 font-mono text-xs">
             <div className="flex items-center justify-between">
-              <span className="eyebrow">
+              <span className="text-xs font-semibold text-primary">
                 Automated Test Verification
               </span>
               <span

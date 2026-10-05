@@ -40,10 +40,10 @@ export const CourseCard: React.FC<CourseCardProps> = ({
 
       <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3">
         <div className="space-y-3">
-          {/* Top Eyebrow & Level */}
+          {/* Header Domain & Level */}
           <div className="flex items-center justify-between gap-2 border-b border-subtle dark:border-white/[0.08] pb-2.5">
-            <span className="kicker text-[10px] truncate dark:text-slate-400">
-              › {course.domain || 'SYSTEMS'}
+            <span className="text-[10px] font-medium text-muted uppercase tracking-wider truncate dark:text-slate-400">
+              {course.domain || 'Engineering'}
             </span>
             <span className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-full border font-semibold ${getBadgeStyle(course.level)}`}>
               {course.level || 'Beginner'}
@@ -52,20 +52,20 @@ export const CourseCard: React.FC<CourseCardProps> = ({
 
           {/* Title & Description */}
           <div className="space-y-1.5">
-            <h3 className="text-sm font-bold text-primary dark:text-slate-100 group-hover:text-sky-500 dark:group-hover:text-sky-400 transition line-clamp-1">
+            <h3 className="text-sm font-semibold text-primary dark:text-slate-100 group-hover:text-sky-500 dark:group-hover:text-sky-400 transition line-clamp-1">
               {course.title}
             </h3>
-            <p className="text-xs text-secondary dark:text-slate-400 line-clamp-2 leading-relaxed font-sans">
+            <p className="text-xs text-secondary dark:text-slate-400 line-clamp-2 leading-relaxed font-normal font-sans">
               {course.description}
             </p>
           </div>
 
           {/* 4-Phase Mono Pipeline Badges */}
           <div className="grid grid-cols-4 gap-1 pt-1 font-mono text-[9px] text-center">
-            <div className="py-1 rounded-md bg-surface-elevated dark:bg-[#151c2a] border border-subtle dark:border-white/[0.07] text-secondary dark:text-slate-400 font-semibold">01 VID</div>
-            <div className="py-1 rounded-md bg-surface-elevated dark:bg-[#151c2a] border border-subtle dark:border-white/[0.07] text-secondary dark:text-slate-400 font-semibold">02 NOTE</div>
-            <div className="py-1 rounded-md bg-surface-elevated dark:bg-[#151c2a] border border-subtle dark:border-white/[0.07] text-secondary dark:text-slate-400 font-semibold">03 CODE</div>
-            <div className="py-1 rounded-md bg-surface-elevated dark:bg-[#151c2a] border border-subtle dark:border-white/[0.07] text-secondary dark:text-slate-400 font-semibold">04 QUIZ</div>
+            <div className="py-1 rounded-md bg-surface-elevated dark:bg-[#151c2a] border border-subtle dark:border-white/[0.07] text-secondary dark:text-slate-400 font-medium">01 VID</div>
+            <div className="py-1 rounded-md bg-surface-elevated dark:bg-[#151c2a] border border-subtle dark:border-white/[0.07] text-secondary dark:text-slate-400 font-medium">02 NOTE</div>
+            <div className="py-1 rounded-md bg-surface-elevated dark:bg-[#151c2a] border border-subtle dark:border-white/[0.07] text-secondary dark:text-slate-400 font-medium">03 CODE</div>
+            <div className="py-1 rounded-md bg-surface-elevated dark:bg-[#151c2a] border border-subtle dark:border-white/[0.07] text-secondary dark:text-slate-400 font-medium">04 QUIZ</div>
           </div>
 
           {/* Skills Covered */}

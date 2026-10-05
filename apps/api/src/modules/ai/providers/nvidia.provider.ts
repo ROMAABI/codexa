@@ -18,12 +18,15 @@ export class NvidiaProvider implements IAIProvider {
 
     const baseUrl = (ENV.NVIDIA_BASE_URL || 'https://integrate.api.nvidia.com/v1').replace(/\/+$/, '');
     const endpoint = `${baseUrl}/chat/completions`;
-    const model = ENV.NVIDIA_MODEL || 'meta/llama-3.2-11b-vision-instruct';
+    const model = ENV.NVIDIA_MODEL || 'nvidia/nemotron-3-ultra-550b-a55b';
 
+    const startTime = Date.now();
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 35000); // 35-second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 20000); // 20-second timeout
 
     try {
+      console.log(`[AI Gateway:NVIDIA] Requesting completion from '${model}' (${messages.length} messages)...`);
+
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -35,12 +38,14 @@ export class NvidiaProvider implements IAIProvider {
           model,
           messages,
           temperature: options?.temperature ?? 0.2,
-          top_p: options?.topP ?? 0.7,
+          top_p: options?.topP ?? 0.8,
           max_tokens: options?.maxTokens ?? 1024,
           stream: false,
         }),
         signal: controller.signal,
       });
+
+      const durationMs = Date.now() - startTime;
 
       if (!response.ok) {
         let errorDetail = `HTTP ${response.status} ${response.statusText}`;
@@ -54,21 +59,27 @@ export class NvidiaProvider implements IAIProvider {
         } catch {
           // Response body was not JSON
         }
+        console.error(`[AI Gateway:NVIDIA] Request failed in ${durationMs}ms: ${errorDetail}`);
         throw new Error(`[NVIDIA NIM] Request failed: ${errorDetail}`);
       }
 
       const data: any = await response.json();
       const content = data.choices?.[0]?.message?.content;
 
-      if (!content || typeof content !== 'string') {
+      if (!content || typeof content !== 'string' || content.trim().length === 0) {
+        console.warn(`[AI Gateway:NVIDIA] Model '${model}' returned empty content in ${durationMs}ms.`);
         throw new Error('[NVIDIA NIM] Received empty response from model endpoint.');
       }
 
+      console.log(`[AI Gateway:NVIDIA] Model '${model}' completed in ${durationMs}ms (${content.length} chars).`);
       return content.trim();
     } catch (err: any) {
+      const durationMs = Date.now() - startTime;
       if (err.name === 'AbortError') {
-        throw new Error('[NVIDIA NIM] Request timed out after 35 seconds.');
+        console.error(`[AI Gateway:NVIDIA] Request to '${model}' timed out after 20s.`);
+        throw new Error(`[NVIDIA NIM] Request timed out after 20 seconds.`);
       }
+      console.error(`[AI Gateway:NVIDIA] Execution error in ${durationMs}ms:`, err.message);
       throw err;
     } finally {
       clearTimeout(timeoutId);

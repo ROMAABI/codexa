@@ -8,6 +8,7 @@ import { UserSkillModel } from '../../database/models/UserSkill';
 import { AssessmentModel } from '../../database/models/Assessment';
 import { ChallengeModel } from '../../database/models/Challenge';
 import { ProgressModel } from '../../database/models/Progress';
+import { ProjectModel } from '../../database/models/Project';
 import { AIMentorMode } from '@codexa/shared';
 
 export interface BuiltAIContext {
@@ -32,6 +33,16 @@ export interface BuiltAIContext {
     currentCode?: string;
     runtimeError?: string;
   };
+  projectContext?: {
+    projectId?: string;
+    title?: string;
+    description?: string;
+    activeFilePath?: string;
+    activeFileContent?: string;
+    fileList?: string[];
+    terminalOutput?: string;
+    recentTestFailures?: Array<{ testName: string; expected?: string; actual?: string; hint?: string }>;
+  };
   assessmentContext?: {
     title: string;
     description: string;
@@ -55,6 +66,12 @@ export class AIContextBuilder {
     currentCode?: string;
     runtimeError?: string;
     stepName?: 'VIDEO' | 'NOTES' | 'PRACTICE' | 'ASSESSMENT' | 'PROJECT';
+    // Project context
+    projectId?: string;
+    activeFilePath?: string;
+    projectFiles?: Array<{ path: string; content?: string }>;
+    terminalOutput?: string;
+    recentTestFailures?: Array<{ testName: string; expected?: string; actual?: string; hint?: string }>;
   }): Promise<BuiltAIContext> {
     const {
       userId,
@@ -68,171 +85,231 @@ export class AIContextBuilder {
       currentCode,
       runtimeError,
       stepName,
+      projectId,
+      activeFilePath,
+      projectFiles,
+      terminalOutput,
+      recentTestFailures,
     } = params;
 
-    // 1. Authenticated User Profile & Weak Skills (strictly privacy-safe, no passwords/emails)
     let studentName = 'Learner';
     let studentProfile = 'Codexa Student';
+    const weakSkills: string[] = [];
 
-    if (userId && mongoose.Types.ObjectId.isValid(userId)) {
-      const user = await UserModel.findById(userId);
-      if (user) {
-        studentName = user.name || 'Learner';
-        studentProfile = `${user.name} • ${user.xp} XP • ${user.streak}-day streak • Level: ${user.preferences?.experienceLevel || 'Beginner'}`;
-      }
-    }
+    // 1. Authenticated User Profile & Weak Skills (fail-safe)
+    try {
+      if (userId && mongoose.Types.ObjectId.isValid(userId)) {
+        const user = await UserModel.findById(userId);
+        if (user) {
+          studentName = user.name || 'Learner';
+          studentProfile = `${user.name} • ${user.xp} XP • ${user.streak}-day streak • Level: ${user.preferences?.experienceLevel || 'Beginner'}`;
+        }
 
-    const weakSkillsDocs = mongoose.Types.ObjectId.isValid(userId)
-      ? await UserSkillModel.find({
+        const weakSkillsDocs = await UserSkillModel.find({
           userId: new mongoose.Types.ObjectId(userId),
           masteryScore: { $lt: 65 },
-        }).limit(3)
-      : [];
+        }).limit(3);
 
-    const weakSkills = weakSkillsDocs.map(
-      (s) => `${s.skillSlug} (Mastery: ${s.masteryScore}%)`
-    );
+        weakSkillsDocs.forEach((s) => {
+          weakSkills.push(`${s.skillSlug} (Mastery: ${s.masteryScore}%)`);
+        });
+      }
+    } catch (err) {
+      console.warn('[AIContextBuilder] Non-critical user profile lookup error:', err);
+    }
 
-    // 2. Course & Module Metadata
+    // 2. Course, Module & Lesson Metadata (fail-safe)
     let resolvedCourseId = courseId;
     let resolvedModuleId = moduleId;
     let courseTitle: string | undefined;
     let courseDomain: string | undefined;
     let moduleTitle: string | undefined;
     let moduleDescription: string | undefined;
-
-    // 3. Lesson Metadata
     let lessonTitle: string | undefined;
     let lessonDescription: string | undefined;
     let lessonObjective: string | undefined;
     let lessonOrder: number | undefined;
 
-    if (lessonId && mongoose.Types.ObjectId.isValid(lessonId)) {
-      const lesson = await LessonModel.findById(lessonId);
-      if (lesson) {
-        lessonTitle = lesson.title;
-        lessonDescription = lesson.description;
-        lessonObjective = `${lesson.title}: ${lesson.description}`;
-        lessonOrder = lesson.order;
-        resolvedModuleId = resolvedModuleId || lesson.moduleId?.toString();
-        resolvedCourseId = resolvedCourseId || lesson.courseId?.toString();
+    try {
+      if (lessonId && mongoose.Types.ObjectId.isValid(lessonId)) {
+        const lesson = await LessonModel.findById(lessonId);
+        if (lesson) {
+          lessonTitle = lesson.title;
+          lessonDescription = lesson.description;
+          lessonObjective = `${lesson.title}: ${lesson.description}`;
+          lessonOrder = lesson.order;
+          resolvedModuleId = resolvedModuleId || lesson.moduleId?.toString();
+          resolvedCourseId = resolvedCourseId || lesson.courseId?.toString();
+        }
       }
+
+      if (resolvedCourseId && mongoose.Types.ObjectId.isValid(resolvedCourseId)) {
+        const course = await CourseModel.findById(resolvedCourseId);
+        if (course) {
+          courseTitle = course.title;
+          courseDomain = course.domain;
+        }
+      }
+
+      if (resolvedModuleId && mongoose.Types.ObjectId.isValid(resolvedModuleId)) {
+        const moduleDoc = await ModuleModel.findById(resolvedModuleId);
+        if (moduleDoc) {
+          moduleTitle = moduleDoc.title;
+          moduleDescription = moduleDoc.description;
+        }
+      }
+    } catch (err) {
+      console.warn('[AIContextBuilder] Non-critical curriculum metadata lookup error:', err);
     }
 
-    if (resolvedCourseId && mongoose.Types.ObjectId.isValid(resolvedCourseId)) {
-      const course = await CourseModel.findById(resolvedCourseId);
-      if (course) {
-        courseTitle = course.title;
-        courseDomain = course.domain;
-      }
-    }
-
-    if (resolvedModuleId && mongoose.Types.ObjectId.isValid(resolvedModuleId)) {
-      const moduleDoc = await ModuleModel.findById(resolvedModuleId);
-      if (moduleDoc) {
-        moduleTitle = moduleDoc.title;
-        moduleDescription = moduleDoc.description;
-      }
-    }
-
-    // 4. Current Step & In-Lesson Notes Snippet
+    // 3. Current Step & In-Lesson Notes Snippet (fail-safe)
     let currentStep: string = stepName ? `Step: ${stepName}` : 'In-Lesson Workspace';
     let notesSnippet: string | undefined;
 
-    if (activityId && mongoose.Types.ObjectId.isValid(activityId)) {
-      const activity = await ActivityModel.findById(activityId);
-      if (activity) {
-        switch (activity.type) {
-          case 'VIDEO':
-            currentStep = '① VIDEO (Visual Concept Scaffolding)';
-            break;
-          case 'NOTES':
-            currentStep = '② NOTES (In-Platform Technical Lesson)';
-            break;
-          case 'PRACTICE':
-          case 'CODING_CHALLENGE':
-            currentStep = '③ CODE PRACTICE (Hands-on Drill)';
-            break;
-          case 'QUIZ':
-          case 'ASSESSMENT':
-            currentStep = '④ ASSESSMENT (Knowledge Check)';
-            break;
-          case 'PROJECT_TASK':
-            currentStep = 'FINAL CAPSTONE PROJECT';
-            break;
-          default:
-            currentStep = activity.title;
-        }
+    try {
+      if (activityId && mongoose.Types.ObjectId.isValid(activityId)) {
+        const activity = await ActivityModel.findById(activityId);
+        if (activity) {
+          switch (activity.type) {
+            case 'VIDEO':
+              currentStep = '① VIDEO (Visual Concept Scaffolding)';
+              break;
+            case 'NOTES':
+              currentStep = '② NOTES (In-Platform Technical Lesson)';
+              break;
+            case 'PRACTICE':
+            case 'CODING_CHALLENGE':
+              currentStep = '③ CODE PRACTICE (Hands-on Drill)';
+              break;
+            case 'QUIZ':
+            case 'ASSESSMENT':
+              currentStep = '④ ASSESSMENT (Knowledge Check)';
+              break;
+            case 'PROJECT_TASK':
+              currentStep = 'FINAL CAPSTONE PROJECT';
+              break;
+            default:
+              currentStep = activity.title;
+          }
 
-        if (activity.content) {
-          // Truncate snippet to 1000 characters to conserve context tokens
-          notesSnippet = activity.content.slice(0, 1000);
+          if (activity.content) {
+            notesSnippet = activity.content.slice(0, 1000);
+          }
         }
       }
+    } catch (err) {
+      console.warn('[AIContextBuilder] Non-critical activity lookup error:', err);
     }
 
-    // 5. Code Practice Context
+    // 4. Code Practice Context
     let challengeContext: BuiltAIContext['challengeContext'];
-    const activeChallengeId = challengeId;
-
-    if (activeChallengeId && mongoose.Types.ObjectId.isValid(activeChallengeId)) {
-      const challenge = await ChallengeModel.findById(activeChallengeId);
-      if (challenge) {
+    try {
+      const activeChallengeId = challengeId;
+      if (activeChallengeId && mongoose.Types.ObjectId.isValid(activeChallengeId)) {
+        const challenge = await ChallengeModel.findById(activeChallengeId);
+        if (challenge) {
+          challengeContext = {
+            title: challenge.title,
+            description: challenge.description,
+            language: challenge.language,
+            starterCode: challenge.starterCode,
+            currentCode: currentCode || undefined,
+            runtimeError: runtimeError || undefined,
+          };
+        }
+      } else if (currentCode || runtimeError) {
         challengeContext = {
-          title: challenge.title,
-          description: challenge.description,
-          language: challenge.language,
-          starterCode: challenge.starterCode,
+          title: 'Active Code Editor',
+          description: 'Student is working in the interactive editor',
           currentCode: currentCode || undefined,
           runtimeError: runtimeError || undefined,
         };
       }
-    } else if (currentCode || runtimeError) {
-      challengeContext = {
-        title: 'Active Code Editor',
-        description: 'Student is working in the interactive editor',
-        currentCode: currentCode || undefined,
-        runtimeError: runtimeError || undefined,
-      };
+    } catch (err) {
+      console.warn('[AIContextBuilder] Non-critical challenge lookup error:', err);
+    }
+
+    // 5. Project IDE Context (fail-safe)
+    let projectContext: BuiltAIContext['projectContext'];
+    try {
+      if (projectId || stepName === 'PROJECT' || (projectFiles && projectFiles.length > 0)) {
+        let projTitle = 'Full-Stack Capstone Project';
+        let projDesc = 'Multi-file project development environment';
+
+        if (projectId) {
+          const proj = mongoose.Types.ObjectId.isValid(projectId)
+            ? await ProjectModel.findById(projectId)
+            : await ProjectModel.findOne({ slug: projectId });
+          if (proj) {
+            projTitle = proj.title;
+            projDesc = proj.description;
+          }
+        }
+
+        const activeFile = activeFilePath && projectFiles
+          ? projectFiles.find((f) => f.path === activeFilePath)
+          : null;
+
+        projectContext = {
+          projectId,
+          title: projTitle,
+          description: projDesc,
+          activeFilePath,
+          activeFileContent: activeFile?.content || currentCode || undefined,
+          fileList: projectFiles ? projectFiles.map((f) => f.path) : undefined,
+          terminalOutput: terminalOutput ? terminalOutput.slice(-1500) : undefined,
+          recentTestFailures,
+        };
+      }
+    } catch (err) {
+      console.warn('[AIContextBuilder] Non-critical project lookup error:', err);
     }
 
     // 6. Assessment Context & Anti-Cheat Detection
     let isAssessmentActive = Boolean(activeAssessmentId);
     let assessmentContext: BuiltAIContext['assessmentContext'];
 
-    if (activeAssessmentId && mongoose.Types.ObjectId.isValid(activeAssessmentId)) {
-      const assessment = await AssessmentModel.findById(activeAssessmentId);
-      if (assessment) {
-        isAssessmentActive = true;
-        assessmentContext = {
-          title: assessment.title,
-          description: assessment.description,
-          isAssessmentActive: true,
-        };
+    try {
+      if (activeAssessmentId && mongoose.Types.ObjectId.isValid(activeAssessmentId)) {
+        const assessment = await AssessmentModel.findById(activeAssessmentId);
+        if (assessment) {
+          isAssessmentActive = true;
+          assessmentContext = {
+            title: assessment.title,
+            description: assessment.description,
+            isAssessmentActive: true,
+          };
+        }
+      } else if (activityId && mongoose.Types.ObjectId.isValid(activityId)) {
+        const act = await ActivityModel.findById(activityId);
+        if (act && (act.type === 'QUIZ' || act.assessmentRef)) {
+          isAssessmentActive = true;
+          assessmentContext = {
+            title: act.title,
+            description: 'Active Quiz / Assessment in progress',
+            isAssessmentActive: true,
+          };
+        }
       }
-    } else if (activityId && mongoose.Types.ObjectId.isValid(activityId)) {
-      const act = await ActivityModel.findById(activityId);
-      if (act && (act.type === 'QUIZ' || act.assessmentRef)) {
-        isAssessmentActive = true;
-        assessmentContext = {
-          title: act.title,
-          description: 'Active Quiz / Assessment in progress',
-          isAssessmentActive: true,
-        };
-      }
+    } catch (err) {
+      console.warn('[AIContextBuilder] Non-critical assessment lookup error:', err);
     }
 
-    // 7. Student Learning Progress
+    // 7. Student Learning Progress (fail-safe)
     let progressSummary: string | undefined;
-    if (resolvedCourseId && mongoose.Types.ObjectId.isValid(resolvedCourseId) && userId && mongoose.Types.ObjectId.isValid(userId)) {
-      const progress = await ProgressModel.findOne({
-        userId: new mongoose.Types.ObjectId(userId),
-        courseId: new mongoose.Types.ObjectId(resolvedCourseId),
-      });
+    try {
+      if (resolvedCourseId && mongoose.Types.ObjectId.isValid(resolvedCourseId) && userId && mongoose.Types.ObjectId.isValid(userId)) {
+        const progress = await ProgressModel.findOne({
+          userId: new mongoose.Types.ObjectId(userId),
+          courseId: new mongoose.Types.ObjectId(resolvedCourseId),
+        });
 
-      if (progress) {
-        progressSummary = `${progress.completedActivities?.length || 0} activities completed (${progress.percentComplete || 0}% course completion)`;
+        if (progress) {
+          progressSummary = `${progress.completedActivities?.length || 0} activities completed (${progress.percentComplete || 0}% course completion)`;
+        }
       }
+    } catch (err) {
+      console.warn('[AIContextBuilder] Non-critical progress lookup error:', err);
     }
 
     return {
@@ -250,6 +327,7 @@ export class AIContextBuilder {
       currentStep,
       notesSnippet,
       challengeContext,
+      projectContext,
       assessmentContext,
       progressSummary,
       isAssessmentActive,

@@ -51,47 +51,44 @@ export const LoginPage: React.FC = () => {
         {/* Left: Platform Overview / 4-Step Loop */}
         <div className="space-y-6 hidden md:block pr-4">
           <div className="space-y-3">
-            <span className="kicker block">
-              › 01 / WORKBENCH · PROOF, NOT PROMISES
-            </span>
             <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-primary">
               Engineering craft for practitioners.
             </h1>
-            <p className="text-xs lg:text-sm text-secondary leading-relaxed font-sans">
+            <p className="text-xs lg:text-sm text-secondary leading-relaxed">
               A four-stage learning loop: verified masterclasses, mental model notes, Monaco sandbox execution, and calibrated skill assessments.
             </p>
           </div>
 
           <div className="space-y-2.5 pt-2">
             <div className="craft-card p-3 flex items-center gap-3.5">
-              <span className="step-index">01</span>
+              <span className="text-xs font-semibold text-accent shrink-0">01</span>
               <div>
-                <h4 className="text-xs font-bold text-primary font-mono uppercase">Think / Masterclasses</h4>
-                <p className="text-[11px] text-muted font-sans">Mental models and systems architecture walkthroughs</p>
+                <h4 className="text-xs font-semibold text-primary">Think / Masterclasses</h4>
+                <p className="text-xs text-muted">Mental models and systems architecture walkthroughs</p>
               </div>
             </div>
 
             <div className="craft-card p-3 flex items-center gap-3.5">
-              <span className="step-index">02</span>
+              <span className="text-xs font-semibold text-accent shrink-0">02</span>
               <div>
-                <h4 className="text-xs font-bold text-primary font-mono uppercase">Design / Interactive Notes</h4>
-                <p className="text-[11px] text-muted font-sans">Original tutorials with live syntax and code examples</p>
+                <h4 className="text-xs font-semibold text-primary">Design / Interactive Notes</h4>
+                <p className="text-xs text-muted">Original tutorials with live syntax and code examples</p>
               </div>
             </div>
 
             <div className="craft-card p-3 flex items-center gap-3.5">
-              <span className="step-index">03</span>
+              <span className="text-xs font-semibold text-accent shrink-0">03</span>
               <div>
-                <h4 className="text-xs font-bold text-primary font-mono uppercase">Build / Monaco Practice</h4>
-                <p className="text-[11px] text-muted font-sans">Browser Monaco sandbox with live test assertions</p>
+                <h4 className="text-xs font-semibold text-primary">Build / Monaco Practice</h4>
+                <p className="text-xs text-muted">Browser Monaco sandbox with live test assertions</p>
               </div>
             </div>
 
             <div className="craft-card p-3 flex items-center gap-3.5">
-              <span className="step-index">04</span>
+              <span className="text-xs font-semibold text-accent shrink-0">04</span>
               <div>
-                <h4 className="text-xs font-bold text-primary font-mono uppercase">Ship / Assessments</h4>
-                <p className="text-[11px] text-muted font-sans">Skill calibrations and capstone multi-file projects</p>
+                <h4 className="text-xs font-semibold text-primary">Ship / Assessments</h4>
+                <p className="text-xs text-muted">Skill calibrations and capstone multi-file projects</p>
               </div>
             </div>
           </div>
@@ -103,7 +100,6 @@ export const LoginPage: React.FC = () => {
             <div className="flex items-center md:justify-start justify-center mb-1">
               <CodexaLogo size="sm" />
             </div>
-            <span className="kicker block">› AUTHENTICATION</span>
             <h2 className="text-2xl font-bold tracking-tight text-primary">Sign in to Codexa</h2>
             <p className="text-xs text-muted">
               Access your enrolled tracks, coding challenges, and AI mentor
@@ -117,38 +113,38 @@ export const LoginPage: React.FC = () => {
             {/* Subtle Divider */}
             <div className="relative flex items-center justify-center my-2">
               <div className="w-full border-t border-slate-200/80 dark:border-white/10" />
-              <span className="absolute px-3 bg-surface dark:bg-[#0c121e] text-[10px] font-mono uppercase text-muted tracking-widest">
+              <span className="absolute px-3 bg-surface dark:bg-[#0c121e] text-xs text-muted">
                 or with email
               </span>
             </div>
 
             <form onSubmit={handleLogin} className="space-y-4">
               {error && (
-                <div className="p-3 rounded-lg bg-danger/10 border border-danger/30 text-xs text-danger font-mono animate-fade-in">
+                <div className="p-3 rounded-lg bg-danger/10 border border-danger/30 text-xs text-danger animate-fade-in">
                   {error}
                 </div>
               )}
 
             <div className="space-y-1.5">
-              <label className="text-xs font-mono font-semibold text-secondary uppercase">Email Address</label>
+              <label className="text-xs font-semibold text-secondary">Email Address</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="input-field font-mono"
+                className="input-field"
                 placeholder="alex@codexa.dev"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-mono font-semibold text-secondary uppercase">Password</label>
+              <label className="text-xs font-semibold text-secondary">Password</label>
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="input-field font-mono"
+                className="input-field"
                 placeholder="••••••••"
               />
             </div>
@@ -156,15 +152,15 @@ export const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="btn-pill-primary w-full py-2.5 text-xs font-bold inline-flex items-center justify-center gap-2"
+              className="btn btn-primary w-full py-2.5 text-xs font-bold inline-flex items-center justify-center gap-2"
             >
-              <span>{loading ? 'AUTHENTICATING...' : 'SIGN IN'}</span>
+              <span>{loading ? 'Authenticating...' : 'Sign In'}</span>
               <ArrowRight className="h-3.5 w-3.5" />
             </button>
           </form>
           </div>
 
-          <p className="text-center text-xs text-muted font-mono">
+          <p className="text-center text-xs text-muted">
             New to Codexa?{' '}
             <Link to="/register" className="text-primary underline font-semibold transition">
               Create an account

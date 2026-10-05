@@ -84,10 +84,10 @@ export const TryItModal: React.FC<TryItModalProps> = ({
               <Code2 className="h-4 w-4" />
             </div>
             <div>
-              <div className="kicker text-[10px]">› SANDBOX DRILL</div>
+              <div className="text-[10px] text-muted font-medium">Sandbox Drill</div>
               <h2 className="text-sm font-bold text-primary flex items-center gap-2">
                 {title}
-                <span className="mono-tag text-[9px] py-0 px-2 uppercase font-mono">
+                <span className="tag-badge text-[10px] py-0.5 px-2 font-mono">
                   {language}
                 </span>
               </h2>
@@ -97,23 +97,23 @@ export const TryItModal: React.FC<TryItModalProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={handleReset}
-              className="btn-pill text-xs px-3 py-1.5 cursor-pointer flex items-center gap-1"
+              className="btn btn-secondary text-xs px-3 py-1.5 cursor-pointer flex items-center gap-1"
             >
               <RotateCcw className="h-3 w-3" />
-              <span>RESET</span>
+              <span>Reset</span>
             </button>
 
             <button
               onClick={handleRun}
               disabled={executing}
-              className="btn-pill-primary text-xs px-4 py-1.5 cursor-pointer flex items-center gap-1.5 disabled:opacity-40"
+              className="btn btn-primary text-xs px-4 py-1.5 cursor-pointer flex items-center gap-1.5 disabled:opacity-40"
             >
               {executing ? (
                 <Sparkles className="h-3 w-3 animate-spin" />
               ) : (
                 <Play className="h-3 w-3 fill-current" />
               )}
-              <span>{executing ? 'EXECUTING...' : 'RUN CODE'}</span>
+              <span>{executing ? 'Executing...' : 'Run Code'}</span>
             </button>
 
             <button
@@ -154,7 +154,7 @@ export const TryItModal: React.FC<TryItModalProps> = ({
                 Console Output
               </span>
               {output?.executionTimeMs !== undefined && (
-                <span className="mono-tag text-[9px] py-0 px-1.5 text-accent">
+                <span className="tag-badge text-[10px] py-0.5 px-1.5 text-accent font-mono">
                   {output.executionTimeMs}ms
                 </span>
               )}
@@ -170,8 +170,8 @@ export const TryItModal: React.FC<TryItModalProps> = ({
                 <div className="space-y-3 animate-fade-in">
                   {output.stdout ? (
                     <div className="p-3.5 rounded-xl bg-surface border border-subtle text-primary whitespace-pre-wrap">
-                      <span className="kicker block mb-1 text-[10px]">
-                        › STANDARD OUTPUT:
+                      <span className="text-[10px] text-muted font-semibold block mb-1">
+                        Standard Output:
                       </span>
                       {output.stdout}
                     </div>
@@ -179,8 +179,8 @@ export const TryItModal: React.FC<TryItModalProps> = ({
 
                   {output.stderr ? (
                     <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 whitespace-pre-wrap">
-                      <span className="font-bold block mb-1 text-[10px] uppercase tracking-wider font-mono">
-                        › STANDARD ERROR:
+                      <span className="text-[10px] text-rose-400 font-semibold block mb-1">
+                        Standard Error:
                       </span>
                       {output.stderr}
                     </div>
@@ -188,8 +188,8 @@ export const TryItModal: React.FC<TryItModalProps> = ({
 
                   {output.error ? (
                     <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 whitespace-pre-wrap">
-                      <span className="font-bold block mb-1 text-[10px] uppercase tracking-wider font-mono">
-                        › RUNTIME ERROR:
+                      <span className="text-[10px] text-rose-400 font-semibold block mb-1">
+                        Runtime Error:
                       </span>
                       {output.error}
                     </div>

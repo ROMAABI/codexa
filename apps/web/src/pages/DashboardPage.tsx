@@ -64,14 +64,11 @@ export const DashboardPage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-subtle pb-6">
           <div className="space-y-2">
-            <span className="kicker block">
-              › 01 / WORKBENCH · AT THE MACHINE
-            </span>
             <h1 className="text-2xl sm:text-4xl font-extrabold text-primary tracking-tight">
               Welcome back, {user?.name?.split(' ')[0] || 'Developer'}.
             </h1>
-            <p className="text-xs sm:text-sm text-secondary flex items-center gap-2 font-mono">
-              <span className="text-muted">FOCUS:</span>
+            <p className="text-xs sm:text-sm text-secondary flex items-center gap-2">
+              <span className="text-muted">Focus:</span>
               <span className="text-primary font-semibold">
                 {user?.preferences?.learningGoal || 'Full Stack Software Engineer'}
               </span>
@@ -81,10 +78,10 @@ export const DashboardPage: React.FC = () => {
           <div className="flex items-center gap-3">
             <Link
               to="/catalog"
-              className="btn-pill text-xs"
+              className="btn btn-secondary text-xs"
             >
               <Compass className="h-3.5 w-3.5" />
-              <span>BROWSE CURRICULA</span>
+              <span>Browse Curricula</span>
             </Link>
           </div>
         </div>
@@ -92,24 +89,24 @@ export const DashboardPage: React.FC = () => {
         {/* 4-Metric Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="craft-card p-4 space-y-1">
-            <span className="kicker text-[10px]">› TRACKS</span>
-            <div className="text-2xl font-bold font-mono text-primary">{enrollments.length}</div>
-            <span className="text-[11px] text-muted font-mono">Enrolled Curricula</span>
+            <span className="text-xs text-muted block font-medium">Tracks</span>
+            <div className="text-2xl font-bold text-primary">{enrollments.length}</div>
+            <span className="text-xs text-muted">Enrolled Curricula</span>
           </div>
           <div className="craft-card p-4 space-y-1">
-            <span className="kicker text-[10px]">› STREAK</span>
-            <div className="text-2xl font-bold font-mono text-amber-400">{user?.streak || 0}d</div>
-            <span className="text-[11px] text-muted font-mono">Consecutive Days</span>
+            <span className="text-xs text-muted block font-medium">Streak</span>
+            <div className="text-2xl font-bold text-amber-400">{user?.streak || 0}d</div>
+            <span className="text-xs text-muted">Consecutive Days</span>
           </div>
           <div className="craft-card p-4 space-y-1">
-            <span className="kicker text-[10px]">› REPUTATION</span>
-            <div className="text-2xl font-bold font-mono text-sky-400">{user?.xp || 0} XP</div>
-            <span className="text-[11px] text-muted font-mono">Calibrated Skills</span>
+            <span className="text-xs text-muted block font-medium">Reputation</span>
+            <div className="text-2xl font-bold text-sky-400">{user?.xp || 0} XP</div>
+            <span className="text-xs text-muted">Calibrated Skills</span>
           </div>
           <div className="craft-card p-4 space-y-1">
-            <span className="kicker text-[10px]">› VERIFIED</span>
-            <div className="text-2xl font-bold font-mono text-emerald-400">{skills.length}</div>
-            <span className="text-[11px] text-muted font-mono">Skill Checkpoints</span>
+            <span className="text-xs text-muted block font-medium">Verified</span>
+            <div className="text-2xl font-bold text-emerald-400">{skills.length}</div>
+            <span className="text-xs text-muted">Skill Checkpoints</span>
           </div>
         </div>
       </div>
@@ -119,8 +116,8 @@ export const DashboardPage: React.FC = () => {
         <div className="craft-card p-6 sm:p-8 space-y-6 border border-subtle hover:border-highlight transition-all">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="space-y-3.5 max-w-2xl">
-              <span className="kicker">
-                › IN PROGRESS TRACK · 01 THINK · 02 DESIGN · 03 BUILD · 04 SHIP
+              <span className="text-xs font-semibold text-accent block">
+                In Progress Track
               </span>
 
               <div>
@@ -133,9 +130,9 @@ export const DashboardPage: React.FC = () => {
               </div>
 
               {/* Progress Bar */}
-              <div className="space-y-1.5 pt-1 max-w-lg font-mono">
+              <div className="space-y-1.5 pt-1 max-w-lg">
                 <div className="flex justify-between text-xs">
-                  <span className="text-muted">CURRICULUM COMPLETION</span>
+                  <span className="text-muted">Curriculum Completion</span>
                   <span className="text-primary font-bold">
                     {primaryEnrollment.percentComplete || 0}%
                   </span>
@@ -153,10 +150,10 @@ export const DashboardPage: React.FC = () => {
             <div className="flex items-center shrink-0">
               <Link
                 to={`/courses/${primaryCourse.slug}`}
-                className="btn-pill-primary px-6 py-2.5 text-xs inline-flex items-center gap-2"
+                className="btn btn-primary px-6 py-2.5 text-xs inline-flex items-center gap-2"
               >
                 <Play className="h-3.5 w-3.5 fill-current" />
-                <span>RESUME TRACK</span>
+                <span>Resume Track</span>
                 <span>↗</span>
               </Link>
             </div>
@@ -176,23 +173,23 @@ export const DashboardPage: React.FC = () => {
         <div className="craft-card p-6 space-y-3 border border-subtle bg-surface-elevated/40">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="space-y-2 max-w-3xl">
-              <span className="kicker">
-                › RECOMMENDED NEXT DRILL
+              <span className="text-xs font-semibold text-accent block">
+                Recommended Next Drill
               </span>
               <h3 className="text-base sm:text-lg font-bold text-primary">
                 {recommendation.title}
               </h3>
-              <div className="flex items-start gap-2 text-xs text-secondary bg-surface p-3 rounded-lg border border-subtle font-mono">
-                <span className="text-primary font-bold shrink-0">WHY:</span>
+              <div className="flex items-start gap-2 text-xs text-secondary bg-surface p-3 rounded-lg border border-subtle">
+                <span className="text-primary font-bold shrink-0">Why:</span>
                 <span>{recommendation.reason}</span>
               </div>
             </div>
 
             <Link
               to={recommendation.actionUrl}
-              className="btn-pill-primary shrink-0 self-start lg:self-center text-xs"
+              className="btn btn-primary shrink-0 self-start lg:self-center text-xs"
             >
-              <span>START DRILL</span>
+              <span>Start Drill</span>
               <span>↗</span>
             </Link>
           </div>
@@ -203,9 +200,9 @@ export const DashboardPage: React.FC = () => {
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-sm font-bold text-primary tracking-wide font-mono flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-primary tracking-wide flex items-center gap-2">
               <Zap className="h-4 w-4 text-sky-400" />
-              VERIFIABLE SKILL CONFIDENCE PROFILE
+              Verifiable Skill Confidence Profile
             </h2>
             <p className="text-xs text-muted mt-0.5">
               Calibrated from quizzes and isolated sandbox coding drills.
@@ -213,9 +210,9 @@ export const DashboardPage: React.FC = () => {
           </div>
           <Link
             to="/profile"
-            className="text-xs font-mono text-primary hover:underline shrink-0 font-semibold"
+            className="text-xs text-primary hover:underline shrink-0 font-semibold"
           >
-            VIEW PROFILE →
+            View Profile →
           </Link>
         </div>
 

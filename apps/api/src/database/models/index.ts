@@ -11,6 +11,8 @@ export * from './Skill';
 export * from './UserSkill';
 export * from './Progress';
 export * from './Project';
+export * from './ProjectWorkspace';
+export * from './ProjectSubmission';
 export * from './Resource';
 export * from './AIConversation';
 export * from './AnalyticsEvent';

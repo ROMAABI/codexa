@@ -1,22 +1,13 @@
 import React, { useState } from 'react';
-import { AIMentorMode, AIMessageDTO } from '@codexa/shared';
+import { AIMentorMode, AIMessageDTO, AIAskRequestContext } from '@codexa/shared';
 import { apiFetch } from '../api/client';
+import { MarkdownRenderer } from './MarkdownRenderer';
 import { Sparkles, X, Send } from 'lucide-react';
 
 interface AIMentorDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  currentContext?: {
-    courseId?: string;
-    moduleId?: string;
-    lessonId?: string;
-    activityId?: string;
-    challengeId?: string;
-    currentCode?: string;
-    runtimeError?: string;
-    activeAssessmentId?: string;
-    stepName?: 'VIDEO' | 'NOTES' | 'PRACTICE' | 'ASSESSMENT' | 'PROJECT';
-  };
+  currentContext?: AIAskRequestContext;
 }
 
 export const AIMentorDrawer: React.FC<AIMentorDrawerProps> = ({
@@ -91,17 +82,7 @@ export const AIMentorDrawer: React.FC<AIMentorDrawerProps> = ({
     }
   };
 
-  const modeDescriptions: Record<AIMentorMode, string> = {
-    explain: 'Break down concepts into plain, intuitive explanations.',
-    hint: 'Get a conceptual nudge without spoiling the solution.',
-    debug: 'Analyze errors or test failures to find the root cause.',
-    quiz_me: 'Test retention with targeted check questions.',
-    practice: 'Generate a focused drill to reinforce the skill.',
-    review: 'Evaluate architecture, code quality, and best practices.',
-    project_mentor: 'Get architectural guidance for multi-file projects.',
-  };
-
-  const quickPrompts: Record<AIMentorMode, string[]> = {
+  const quickPrompts: Record<string, string[]> = {
     explain: ['Explain this concept in simple terms', 'Why does this pattern matter in production?'],
     hint: ['Give me a hint for the next step', 'What invariant should I maintain here?'],
     debug: ['Why is my test failing?', 'Help me check for logic or syntax errors'],
@@ -163,9 +144,13 @@ export const AIMentorDrawer: React.FC<AIMentorDrawerProps> = ({
                   : 'bg-surface-elevated/70 border border-subtle text-primary rounded-2xl rounded-tl-xs px-4 py-3 max-w-[88%]'
               }`}
             >
-              <div className="whitespace-pre-wrap">
-                {m.content}
-              </div>
+              {m.role === 'user' ? (
+                <div className="whitespace-pre-wrap">{m.content}</div>
+              ) : (
+                <div className="text-xs">
+                  <MarkdownRenderer content={m.content} />
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -215,4 +200,3 @@ export const AIMentorDrawer: React.FC<AIMentorDrawerProps> = ({
     </aside>
   );
 };
-

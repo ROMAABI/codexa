@@ -73,13 +73,13 @@ export const ContentRail: React.FC<ContentRailProps> = ({
             <h2 className="text-lg sm:text-xl font-bold text-primary tracking-tight flex items-center gap-2">
               {title}
               {badge && (
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 font-semibold tracking-wide">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 font-medium tracking-wide">
                   {badge}
                 </span>
               )}
             </h2>
           </div>
-          {subtitle && <p className="text-xs text-muted font-medium">{subtitle}</p>}
+          {subtitle && <p className="text-xs text-muted font-normal">{subtitle}</p>}
         </div>
 
         {/* Scroll Controls (Desktop) */}

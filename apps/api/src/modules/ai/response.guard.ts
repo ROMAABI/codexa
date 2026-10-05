@@ -52,22 +52,11 @@ export class ResponseGuard {
         if (pattern.test(sanitized)) {
           violations.push('Assessment direct answer reveal attempt intercepted');
           sanitized =
-            "🧠 **Conceptual Mentor**\n\n" +
-            "I cannot provide the direct answer to this assessment. Here is the guiding principle to help you reason through problems independently:\n\n" +
-            "Think about the core concepts covered in the lesson notes. What are the expected inputs and outputs, and how does each candidate choice perform?";
+            "I cannot give you the direct answer during an active assessment, but here is how to think through it:\n\n" +
+            "Reflect on the foundational concept from the lesson notes. Look closely at the expected inputs and boundary conditions, and test each choice against those requirements.";
           intercepted = true;
           break;
         }
-      }
-
-      if (!intercepted && !/conceptual mentor|cannot provide the direct answer|guiding principle/i.test(sanitized)) {
-        sanitized =
-          (mode === 'hint' ? "💡 **Assessment Hint**\n\n" : "") +
-          "🧠 **Conceptual Mentor**\n\n" +
-          "During active assessments, my role is to help you reason through problems independently.\n\n" +
-          sanitized;
-      } else if (mode === 'hint' && !/assessment hint/i.test(sanitized)) {
-        sanitized = "💡 **Assessment Hint**\n\n" + sanitized;
       }
 
       // If mode is hint during assessment, ensure hints don't dump entire code blocks
@@ -78,6 +67,18 @@ export class ResponseGuard {
         );
       }
     }
+
+    // Rule 2: Clean up awkward markdown glitches (_*, *_, unmatched asterisks, robotic headers)
+    sanitized = sanitized
+      // Strip robotic bot headers if generated
+      .replace(/^[🧠💡📘🔍🎯]\s*\*\*.*?\*\*\s*\n*/gm, '')
+      // Fix _*text*_ or *_text_* -> **text**
+      .replace(/_\*+(.*?)\*+_/g, '**$1**')
+      .replace(/\*+_(.*?)_\*+/g, '**$1**')
+      // Clean isolated/stray _* or *_
+      .replace(/\b_\*/g, '')
+      .replace(/\*_\b/g, '')
+      .trim();
 
     return {
       passed: violations.length === 0,

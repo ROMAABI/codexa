@@ -54,7 +54,7 @@ export const ReferenceView: React.FC<ReferenceViewProps> = ({
       {resources.length > 0 && (
         <div className="mt-8 pt-6 border-t border-subtle space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="eyebrow flex items-center gap-1.5">
+            <h3 className="text-xs font-semibold text-primary flex items-center gap-1.5">
               <ExternalLink className="h-4 w-4 text-accent" />
               Verified Official Reference Documentation
             </h3>

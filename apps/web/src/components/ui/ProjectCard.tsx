@@ -14,8 +14,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, className = '
       className={`group rounded-xl craft-card-interactive border border-subtle hover:border-highlight p-4 sm:p-5 flex flex-col justify-between space-y-3.5 transition-all duration-200 w-[280px] sm:w-[320px] shrink-0 ${className}`}
     >
       <div className="flex items-center justify-between">
-        <span className="kicker text-[10px]">
-          › CAPSTONE
+        <span className="text-[10px] font-medium text-muted uppercase tracking-wider">
+          Capstone
         </span>
         <span className="text-[11px] text-muted font-mono flex items-center gap-1">
           <Layers className="h-3 w-3 text-muted" />

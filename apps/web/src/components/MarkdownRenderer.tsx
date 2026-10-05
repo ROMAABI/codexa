@@ -200,10 +200,19 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
   return <div className={`space-y-1 font-sans ${className}`}>{elements}</div>;
 };
 
-// Helper function to handle inline markdown (**bold**, *italic*, `code`, [links](url))
-function renderInlineFormatting(text: string): React.ReactNode[] {
+// Helper function to handle inline markdown (***bold-italic***, **bold**, *italic*, _italic_, `code`, [links](url))
+function renderInlineFormatting(rawText: string): React.ReactNode[] {
+  // Pre-normalize formatting quirks and stray symbols
+  let text = rawText
+    .replace(/_\*+(.*?)\*+_/g, '***$1***')
+    .replace(/\*+_(.*?)_\*+/g, '***$1***')
+    .replace(/__(.*?)__/g, '**$1**')
+    .replace(/\b_([^_]+)_\b/g, '*$1*')
+    .replace(/\b_\*/g, '')
+    .replace(/\*_\b/g, '');
+
   const parts: React.ReactNode[] = [];
-  const regex = /(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g;
+  const regex = /(\*\*\*[^*]+\*\*\*|\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;
 
@@ -213,7 +222,13 @@ function renderInlineFormatting(text: string): React.ReactNode[] {
     }
 
     const token = match[0];
-    if (token.startsWith('**') && token.endsWith('**')) {
+    if (token.startsWith('***') && token.endsWith('***')) {
+      parts.push(
+        <strong key={match.index} className="font-bold italic text-primary">
+          {token.slice(3, -3)}
+        </strong>
+      );
+    } else if (token.startsWith('**') && token.endsWith('**')) {
       parts.push(
         <strong key={match.index} className="font-bold text-primary">
           {token.slice(2, -2)}
@@ -297,10 +312,10 @@ const CodeBlock: React.FC<{
           {onTryIt && isRunnable && (
             <button
               onClick={() => onTryIt(code, language)}
-              className="btn-pill text-[11px] px-2.5 py-1 inline-flex items-center gap-1 cursor-pointer"
+              className="btn btn-secondary text-[11px] px-2.5 py-1 inline-flex items-center gap-1 cursor-pointer"
             >
               <Play className="h-3 w-3 fill-current" />
-              <span>RUN SNIPPET</span>
+              <span>Run Snippet</span>
             </button>
           )}
 
@@ -384,8 +399,8 @@ const CalloutBlock: React.FC<{
     <div className={`p-4 rounded-xl border ${config.border} ${config.bg} my-4 space-y-2`}>
       <div className="flex items-center gap-2">
         <IconComponent className={`h-4 w-4 ${config.iconColor}`} />
-        <span className={`text-xs font-mono font-bold tracking-widest-mono ${config.text}`}>
-          › {config.title}
+        <span className={`text-xs font-semibold ${config.text}`}>
+          {config.title}
         </span>
       </div>
       <div className="text-xs text-secondary leading-relaxed pl-6 font-normal space-y-1">

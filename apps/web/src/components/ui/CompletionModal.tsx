@@ -63,7 +63,7 @@ export const CompletionModal: React.FC<CompletionModalProps> = ({
         {/* Skills Demonstrated Feedback */}
         {skillsDemonstrated.length > 0 && (
           <div className="space-y-2 p-3.5 rounded-lg bg-surface-elevated border border-subtle">
-            <div className="eyebrow flex items-center gap-1">
+            <div className="text-[11px] font-semibold text-primary flex items-center gap-1">
               <Sparkles className="h-3 w-3 text-accent" />
               Verified Competencies Demonstrated
             </div>
@@ -86,7 +86,7 @@ export const CompletionModal: React.FC<CompletionModalProps> = ({
         {/* Next Step Teaser */}
         {nextActivityTitle && (
           <div className="space-y-1">
-            <div className="eyebrow">
+            <div className="text-[11px] font-semibold text-secondary">
               Next in Syllabus:
             </div>
             <div className="text-xs font-semibold text-primary truncate">
