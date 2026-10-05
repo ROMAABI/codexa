@@ -121,21 +121,21 @@ export const CourseDetailPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-6">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
             <div className="space-y-4 max-w-2xl flex-1">
-              <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-                <span className="kicker">
-                  › {course.domain || 'SYSTEMS'}
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <span className="text-accent font-semibold">
+                  {course.domain || 'Systems'}
                 </span>
                 <span className="text-muted">/</span>
-                <span className="text-secondary uppercase">
+                <span className="text-secondary">
                   {course.level || 'Beginner'}
                 </span>
                 <span className="text-muted">/</span>
                 <span className="text-secondary">
-                  ~{course.estimatedHours || 40}H
+                  ~{course.estimatedHours || 40}h
                 </span>
                 <span className="text-muted">/</span>
                 <span className="text-secondary">
-                  {totalLessons} LESSONS
+                  {totalLessons} Lessons
                 </span>
               </div>
 
@@ -143,15 +143,15 @@ export const CourseDetailPage: React.FC = () => {
                 {course.title}
               </h1>
 
-              <p className="text-sm sm:text-base text-secondary leading-relaxed font-sans max-w-2xl">
+              <p className="text-sm sm:text-base text-secondary leading-relaxed max-w-2xl">
                 {course.description}
               </p>
 
               {/* Progress Bar if logged in */}
               {user && (
-                <div className="p-4 rounded-xl craft-card max-w-xl space-y-2 font-mono">
+                <div className="p-4 rounded-xl craft-card max-w-xl space-y-2">
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-muted">TRACK COMPLETION</span>
+                    <span className="text-muted">Track Completion</span>
                     <span className="text-primary font-bold">
                       {percentComplete}% ({completedCount} / {totalActivitiesCount} done)
                     </span>
@@ -169,10 +169,10 @@ export const CourseDetailPage: React.FC = () => {
               <div className="pt-2">
                 <Link
                   to={startUrl}
-                  className="btn-pill-primary px-6 py-2.5 text-xs inline-flex items-center gap-2"
+                  className="btn btn-primary px-6 py-2.5 text-xs inline-flex items-center gap-2"
                 >
                   <Play className="h-3.5 w-3.5 fill-current" />
-                  <span>{percentComplete > 0 ? 'RESUME TRACK' : 'START FIRST LESSON'}</span>
+                  <span>{percentComplete > 0 ? 'Resume Track' : 'Start First Lesson'}</span>
                   <span>↗</span>
                 </Link>
               </div>
@@ -191,14 +191,14 @@ export const CourseDetailPage: React.FC = () => {
         {/* Skills Covered */}
         {course.skillsCovered && course.skillsCovered.length > 0 && (
           <div className="craft-card space-y-3 p-5 sm:p-6">
-            <span className="kicker block">
-              › VERIFIED COMPETENCIES BUILT IN THIS TRACK
+            <span className="text-xs font-semibold text-accent block">
+              Verified Competencies Built in this Track
             </span>
             <div className="flex flex-wrap gap-2 pt-1">
               {course.skillsCovered.map((skill: string) => (
                 <span
                   key={skill}
-                  className="mono-tag"
+                  className="tag-badge"
                 >
                   {skill}
                 </span>
@@ -233,14 +233,14 @@ export const CourseDetailPage: React.FC = () => {
                     className="p-4 sm:p-5 border-b border-subtle flex items-center justify-between cursor-pointer hover:bg-surface-elevated transition"
                   >
                     <div className="space-y-0.5">
-                      <span className="step-index text-xs">
-                        MODULE 0{mIdx + 1}
+                      <span className="text-xs font-semibold text-accent block">
+                        Module 0{mIdx + 1}
                       </span>
                       <h3 className="text-sm sm:text-base font-bold text-primary">{mod.title}</h3>
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <span className="text-xs font-mono text-muted">
+                      <span className="text-xs text-muted">
                         {mod.lessons?.length || 0} Lessons
                       </span>
                       {isExpanded ? (
@@ -264,18 +264,18 @@ export const CourseDetailPage: React.FC = () => {
                           <div key={lesson._id} className="p-4 sm:p-5 space-y-3">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                               <div className="space-y-0.5">
-                                <div className="flex items-center gap-2 font-mono">
-                                  <span className="text-[10px] text-primary font-semibold uppercase px-2 py-0.5 rounded bg-surface-elevated border border-subtle">
-                                    LESSON {lIdx + 1}
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs text-primary font-semibold px-2 py-0.5 rounded bg-surface-elevated border border-subtle">
+                                    Lesson {lIdx + 1}
                                   </span>
                                   {allActCompleted ? (
-                                    <span className="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
+                                    <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1">
                                       <CheckCircle2 className="h-3 w-3" />
-                                      ✓ COMPLETED
+                                      Completed
                                     </span>
                                   ) : (
-                                    <span className="text-[10px] text-muted">
-                                      ○ IN PROGRESS
+                                    <span className="text-xs text-muted">
+                                      In progress
                                     </span>
                                   )}
                                 </div>
@@ -286,9 +286,9 @@ export const CourseDetailPage: React.FC = () => {
 
                               <Link
                                 to={`/courses/${course.slug}/lesson/${lesson._id}`}
-                                className="btn-pill text-xs self-start sm:self-auto inline-flex items-center gap-1.5"
+                                className="btn btn-secondary text-xs self-start sm:self-auto inline-flex items-center gap-1.5"
                               >
-                                <span>{allActCompleted ? 'REVIEW' : 'OPEN'}</span>
+                                <span>{allActCompleted ? 'Review' : 'Open'}</span>
                                 <span>↗</span>
                               </Link>
                             </div>
@@ -321,7 +321,7 @@ export const CourseDetailPage: React.FC = () => {
                                   <Link
                                     key={act._id}
                                     to={`/courses/${course.slug}/lesson/${lesson._id}?activity=${act._id}`}
-                                    className={`flex items-center justify-between p-2.5 rounded-lg border text-xs font-mono transition ${
+                                    className={`flex items-center justify-between p-2.5 rounded-lg border text-xs transition ${
                                       isCompleted
                                         ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
                                         : 'bg-surface-elevated border-subtle text-secondary hover:text-primary hover:border-highlight'
@@ -333,11 +333,11 @@ export const CourseDetailPage: React.FC = () => {
                                       ) : (
                                         getActivityIcon(act.type)
                                       )}
-                                      <span className="text-[11px] truncate">
+                                      <span className="text-xs truncate">
                                         {getStepLabel(act.type, aIdx)}
                                       </span>
                                     </div>
-                                    <span className="text-[10px] shrink-0 ml-1">
+                                    <span className="text-xs shrink-0 ml-1">
                                       {isCompleted ? '✓' : '○'}
                                     </span>
                                   </Link>
@@ -358,8 +358,8 @@ export const CourseDetailPage: React.FC = () => {
               <div className="craft-card space-y-4 p-6 border border-subtle">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-subtle pb-4">
                   <div className="space-y-1">
-                    <span className="kicker">
-                      › CAPSTONE PROJECT
+                    <span className="text-xs font-semibold text-accent block">
+                      Capstone Project
                     </span>
                     <h3 className="text-base sm:text-xl font-bold text-primary">
                       {course.finalProject.title}
@@ -368,9 +368,9 @@ export const CourseDetailPage: React.FC = () => {
 
                   <button
                     onClick={() => navigate(`/projects/${course.finalProject.slug}`)}
-                    className="btn-pill-primary text-xs self-start sm:self-auto inline-flex items-center gap-1.5"
+                    className="btn btn-primary text-xs self-start sm:self-auto inline-flex items-center gap-1.5"
                   >
-                    <span>LAUNCH PROJECT</span>
+                    <span>Launch Project</span>
                     <span>↗</span>
                   </button>
                 </div>

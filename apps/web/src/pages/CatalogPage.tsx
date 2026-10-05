@@ -69,19 +69,26 @@ export const CatalogPage: React.FC = () => {
   useEffect(() => {
     async function loadCatalogData() {
       try {
-        const [cData, sData, pData, progData] = await Promise.all([
+        const [cData, userSkillsData, pData, progData, publicSkillsData] = await Promise.all([
           apiFetch<CourseDTO[]>('/courses'),
-          user ? apiFetch<any[]>('/skills/my-skills').catch(() => []) : apiFetch<any[]>('/skills').catch(() => []),
+          user ? apiFetch<any[]>('/skills/my-skills').catch(() => []) : Promise.resolve([]),
           apiFetch<any[]>('/projects').catch(() => []),
           user ? apiFetch<any[]>('/progress/my-courses').catch(() => []) : Promise.resolve([]),
+          apiFetch<any[]>('/skills').catch(() => []),
         ]);
         setCourses(cData || []);
-        if (sData && sData.length > 0) {
-          setSkills(sData);
+
+        if (user && userSkillsData && userSkillsData.length > 0) {
+          const userSkillMap = new Map(userSkillsData.map((s: any) => [s.skillSlug || s.slug, s]));
+          const merged = (publicSkillsData || []).map((ps: any) => {
+            const uSkill = userSkillMap.get(ps.slug || ps.skillSlug);
+            return uSkill ? { ...ps, ...uSkill, isAssessed: true } : ps;
+          });
+          setSkills(merged);
         } else {
-          const publicSkills = await apiFetch<any[]>('/skills').catch(() => []);
-          setSkills(publicSkills || []);
+          setSkills(publicSkillsData || []);
         }
+
         setProjects(pData || []);
         setMyCourses(progData || []);
       } catch (err) {
@@ -150,15 +157,11 @@ export const CatalogPage: React.FC = () => {
       <div className="border-b border-subtle py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-6">
           <div className="space-y-3 max-w-3xl">
-            <span className="kicker block">
-              › CURRICULA · PROOF, NOT PROMISES
-            </span>
-
-            <h1 className="text-3xl sm:text-5xl font-extrabold text-primary tracking-tight">
+            <h1 className="text-3xl sm:text-5xl font-extrabold font-display text-primary tracking-[-0.045em] leading-[1.0] sm:leading-[1.02]">
               Curricula built for practitioners.
             </h1>
 
-            <p className="text-sm sm:text-base text-secondary leading-relaxed font-sans max-w-2xl">
+            <p className="text-sm sm:text-base text-secondary leading-relaxed max-w-2xl font-normal">
               Master systems engineering with a structured four-stage execution pipeline: verified lessons, comprehensive interactive notes, sandboxed Monaco code drills, and calibrated skill assessments.
             </p>
           </div>
@@ -166,30 +169,30 @@ export const CatalogPage: React.FC = () => {
           {/* 4-Phase Blueprint Bar */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2">
             <div className="craft-card p-4 space-y-1">
-              <span className="step-index">01</span>
-              <h3 className="text-xs font-bold text-primary uppercase font-mono">Think</h3>
-              <p className="text-[11px] text-muted leading-relaxed">
+              <span className="text-xs font-semibold text-accent block">Phase 01</span>
+              <h3 className="text-sm font-semibold text-primary">Think</h3>
+              <p className="text-xs text-muted leading-relaxed font-normal">
                 Understand architecture and system mechanics with focused instruction.
               </p>
             </div>
             <div className="craft-card p-4 space-y-1">
-              <span className="step-index">02</span>
-              <h3 className="text-xs font-bold text-primary uppercase font-mono">Design</h3>
-              <p className="text-[11px] text-muted leading-relaxed">
+              <span className="text-xs font-semibold text-accent block">Phase 02</span>
+              <h3 className="text-sm font-semibold text-primary">Design</h3>
+              <p className="text-xs text-muted leading-relaxed font-normal">
                 Interactive notes, live syntax snippets, and runnable code blocks.
               </p>
             </div>
             <div className="craft-card p-4 space-y-1">
-              <span className="step-index">03</span>
-              <h3 className="text-xs font-bold text-primary uppercase font-mono">Build</h3>
-              <p className="text-[11px] text-muted leading-relaxed">
+              <span className="text-xs font-semibold text-accent block">Phase 03</span>
+              <h3 className="text-sm font-semibold text-primary">Build</h3>
+              <p className="text-xs text-muted leading-relaxed font-normal">
                 Monaco sandbox execution with live unit tests and instant feedback.
               </p>
             </div>
             <div className="craft-card p-4 space-y-1">
-              <span className="step-index">04</span>
-              <h3 className="text-xs font-bold text-primary uppercase font-mono">Ship</h3>
-              <p className="text-[11px] text-muted leading-relaxed">
+              <span className="text-xs font-semibold text-accent block">Phase 04</span>
+              <h3 className="text-sm font-semibold text-primary">Ship</h3>
+              <p className="text-xs text-muted leading-relaxed font-normal">
                 Calibrated quizzes that verify skill competencies and build track record.
               </p>
             </div>
@@ -314,10 +317,9 @@ export const CatalogPage: React.FC = () => {
         {activeCategory !== 'ALL' || searchQuery ? (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold font-mono text-primary flex items-center gap-2">
-                <span className="kicker">›</span>
-                <span>{activeCategory === 'ALL' ? 'SEARCH RESULTS' : activeCategory.toUpperCase()}</span>
-                <span className="text-xs font-mono text-muted">({filteredCourses.length} Curricula)</span>
+              <h3 className="text-sm font-semibold text-primary flex items-center gap-2">
+                <span>{activeCategory === 'ALL' ? 'Search Results' : activeCategory}</span>
+                <span className="text-xs text-muted">({filteredCourses.length} Curricula)</span>
               </h3>
             </div>
 

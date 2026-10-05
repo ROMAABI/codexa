@@ -502,8 +502,8 @@ export const LessonWorkspacePage: React.FC = () => {
           </div>
 
           <div>
-            <span className="kicker block truncate">
-              › {parentModule ? parentModule.title : 'ACTIVE MODULE'}
+            <span className="text-xs font-semibold text-accent block truncate">
+              {parentModule ? parentModule.title : 'Active Module'}
             </span>
             <h2 className="text-sm font-bold text-primary tracking-tight truncate mt-0.5" title={cleanLessonTitle}>
               {cleanLessonTitle}
@@ -511,9 +511,9 @@ export const LessonWorkspacePage: React.FC = () => {
           </div>
 
           {/* Lesson Mini Progress */}
-          <div className="pt-1 font-mono">
-            <div className="flex items-center justify-between text-[10px] text-muted mb-1.5">
-              <span>STEPS</span>
+          <div className="pt-1">
+            <div className="flex items-center justify-between text-xs text-muted mb-1.5">
+              <span>Steps</span>
               <span className="font-bold text-primary">
                 {activities.filter((a: any) => progress?.completedActivities?.includes(a._id)).length} /{' '}
                 {activities.length}
@@ -538,8 +538,8 @@ export const LessonWorkspacePage: React.FC = () => {
 
         {/* Activities List */}
         <div className="flex-1 overflow-y-auto p-2 space-y-1">
-          <div className="kicker px-2 py-1">
-            › 4-STAGE PIPELINE
+          <div className="text-xs font-semibold text-muted px-2 py-1 uppercase tracking-wider">
+            Pipeline Steps
           </div>
 
           {activities.map((act: any, idx: number) => {
@@ -567,14 +567,14 @@ export const LessonWorkspacePage: React.FC = () => {
                   )}
                   <div className="truncate">
                     <div className="truncate text-xs font-semibold text-primary">{act.title}</div>
-                    <div className="text-[10px] font-mono text-muted uppercase">
+                    <div className="text-xs text-muted">
                       {getActivityTypeLabel(act.type, idx)}
                     </div>
                   </div>
                 </div>
 
                 {/* Status Indicator */}
-                <span className="text-[10px] font-mono shrink-0 ml-2">
+                <span className="text-xs shrink-0 ml-2">
                   {isActCompleted ? (
                     <span className="text-emerald-400 font-bold">✓</span>
                   ) : isCurrent ? (
@@ -592,10 +592,10 @@ export const LessonWorkspacePage: React.FC = () => {
         <div className="p-3 border-t border-subtle bg-surface">
           <button
             onClick={() => setIsAIMentorOpen(true)}
-            className="btn-pill w-full py-2 text-xs inline-flex items-center justify-center gap-2"
+            className="btn btn-secondary w-full py-2 text-xs inline-flex items-center justify-center gap-2"
           >
             <Sparkles className="h-3.5 w-3.5" />
-            <span>AI MENTOR</span>
+            <span>AI Mentor</span>
           </button>
         </div>
       </aside>
@@ -641,8 +641,8 @@ export const LessonWorkspacePage: React.FC = () => {
             </div>
 
             <div className="truncate">
-              <span className="kicker block text-[10px]">
-                › STEP 0{currentActivityIndex + 1} / 0{activities.length}
+              <span className="text-xs text-muted block">
+                Step 0{currentActivityIndex + 1} of 0{activities.length}
               </span>
               <h1 className="text-xs sm:text-sm font-bold text-primary truncate">
                 {currentActivity?.title || cleanLessonTitle}
@@ -654,33 +654,33 @@ export const LessonWorkspacePage: React.FC = () => {
             {/* Contextual AI Trigger */}
             <button
               onClick={() => setIsAIMentorOpen(true)}
-              className="btn-pill text-xs px-3 py-1 hidden sm:inline-flex items-center gap-1.5"
+              className="btn btn-secondary text-xs px-3 py-1 hidden sm:inline-flex items-center gap-1.5"
               title="Open AI Mentor context drawer"
             >
               <Sparkles className="h-3 w-3" />
-              <span>AI MENTOR</span>
+              <span>AI Mentor</span>
             </button>
 
             {isCurrentCompleted ? (
-              <div className="flex items-center gap-2 font-mono text-xs">
-                <span className="text-emerald-400 text-[11px] hidden sm:inline-flex items-center gap-1 font-semibold">
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-emerald-400 text-xs hidden sm:inline-flex items-center gap-1 font-semibold">
                   <CheckCircle2 className="h-3.5 w-3.5" />
-                  DONE
+                  Done
                 </span>
                 {currentActivityIndex < activities.length - 1 ? (
                   <button
                     onClick={handleNextStep}
-                    className="btn-pill-primary text-xs px-3 py-1 inline-flex items-center gap-1"
+                    className="btn btn-primary text-xs px-3 py-1 inline-flex items-center gap-1"
                   >
-                    <span>NEXT STEP</span>
+                    <span>Next Step</span>
                     <span>↗</span>
                   </button>
                 ) : nextLessonInCourse ? (
                   <button
                     onClick={handleNextStep}
-                    className="btn-pill-primary text-xs px-3.5 py-1 inline-flex items-center gap-1"
+                    className="btn btn-primary text-xs px-3.5 py-1 inline-flex items-center gap-1"
                   >
-                    <span>NEXT LESSON</span>
+                    <span>Next Lesson</span>
                     <span>↗</span>
                   </button>
                 ) : null}
@@ -688,11 +688,11 @@ export const LessonWorkspacePage: React.FC = () => {
             ) : (
               <button
                 onClick={() => handleCompleteActivity()}
-                className="btn-pill-primary text-xs px-4 py-1.5 inline-flex items-center gap-1.5"
+                className="btn btn-primary text-xs px-4 py-1.5 inline-flex items-center gap-1.5"
                 title="Mark this activity completed and advance"
               >
                 <CheckCircle2 className="h-3.5 w-3.5" />
-                <span>COMPLETE STEP</span>
+                <span>Complete Step</span>
                 <span>↗</span>
               </button>
             )}
@@ -707,8 +707,8 @@ export const LessonWorkspacePage: React.FC = () => {
           {currentActivity?.type === 'VIDEO' && (
             <div className="max-w-4xl mx-auto p-6 sm:p-8 space-y-6">
               <div className="craft-card p-4 space-y-1">
-                <span className="kicker">› 01 THINK / CONCEPT MASTERCLASS</span>
-                <p className="text-xs text-secondary leading-relaxed font-sans">
+                <span className="text-xs font-semibold text-accent block">Phase 01 · Concept Masterclass</span>
+                <p className="text-xs text-secondary leading-relaxed">
                   Watch the lecture below to understand core mechanics and system invariants before reviewing notes and writing code.
                 </p>
               </div>
@@ -726,8 +726,8 @@ export const LessonWorkspacePage: React.FC = () => {
 
               {currentActivity.content && (
                 <div className="pt-6 border-t border-subtle space-y-3">
-                  <span className="kicker block">
-                    › KEY TAKEAWAYS & SUMMARY
+                  <span className="text-xs font-semibold text-accent block">
+                    Key Takeaways & Summary
                   </span>
                   <div className="reading-surface craft-card p-6">
                     <MarkdownRenderer
@@ -739,12 +739,12 @@ export const LessonWorkspacePage: React.FC = () => {
               )}
 
               <div className="pt-6 border-t border-subtle flex items-center justify-between">
-                <span className="text-xs text-muted font-mono">Ready to proceed to tutorial notes?</span>
+                <span className="text-xs text-muted">Ready to proceed to tutorial notes?</span>
                 <button
                   onClick={() => handleCompleteActivity()}
-                  className="btn-pill-primary inline-flex items-center gap-2 text-xs px-5 py-2"
+                  className="btn btn-primary inline-flex items-center gap-2 text-xs px-5 py-2"
                 >
-                  <span>COMPLETE & CONTINUE</span>
+                  <span>Complete & Continue</span>
                   <span>↗</span>
                 </button>
               </div>
@@ -758,13 +758,13 @@ export const LessonWorkspacePage: React.FC = () => {
             <div className="max-w-4xl mx-auto p-6 sm:p-10 space-y-8">
               {/* Tutorial Header Banner */}
               <div className="border-b border-subtle pb-6 space-y-2">
-                <span className="kicker block">
-                  › 02 DESIGN / INTERACTIVE NOTES & MENTAL MODELS
+                <span className="text-xs font-semibold text-accent block">
+                  Phase 02 · Interactive Notes & Mental Models
                 </span>
                 <h1 className="text-2xl sm:text-4xl font-extrabold text-primary tracking-tight">
                   {currentActivity.title}
                 </h1>
-                <p className="text-xs sm:text-sm text-secondary leading-relaxed font-sans">
+                <p className="text-xs sm:text-sm text-secondary leading-relaxed">
                   Study the core invariants, syntax patterns, and runnable snippets. Once ready, proceed to 03 Build to write code in the live sandbox.
                 </p>
               </div>
@@ -781,11 +781,11 @@ export const LessonWorkspacePage: React.FC = () => {
               {(currentActivity.resourceRef || (currentActivity.resourceRefs && currentActivity.resourceRefs.length > 0)) && (
                 <div className="mt-10 pt-8 border-t border-subtle space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="kicker block">
-                      › PRIMARY REFERENCES & SOURCES
+                    <span className="text-xs font-semibold text-accent block">
+                      Primary References & Sources
                     </span>
-                    <span className="mono-tag text-[10px]">
-                      REFERENCE
+                    <span className="tag-badge text-xs">
+                      Reference
                     </span>
                   </div>
 
@@ -801,13 +801,13 @@ export const LessonWorkspacePage: React.FC = () => {
                           className="craft-card-interactive p-4 transition group flex items-start justify-between"
                         >
                           <div className="space-y-1 overflow-hidden pr-2">
-                            <span className="kicker text-[9px]">
-                              › {res.provider || 'DOCUMENTATION'}
+                            <span className="text-xs text-muted block font-medium">
+                              {res.provider || 'Documentation'}
                             </span>
                             <div className="text-xs font-bold text-primary group-hover:text-sky-400 truncate mt-1">
                               {res.title}
                             </div>
-                            <div className="text-[11px] text-muted font-mono">
+                            <div className="text-xs text-muted">
                               License: {res.license || 'Open Docs'}
                             </div>
                           </div>
@@ -822,19 +822,19 @@ export const LessonWorkspacePage: React.FC = () => {
               {/* Bottom Action / Progression CTA */}
               <div className="pt-8 border-t border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4 craft-card p-6">
                 <div className="space-y-0.5">
-                  <span className="kicker block">
-                    › READY FOR HANDS-ON DRILLS?
+                  <span className="text-xs font-semibold text-accent block">
+                    Ready for Hands-On Drills?
                   </span>
-                  <p className="text-xs text-secondary font-medium font-sans">
+                  <p className="text-xs text-secondary font-medium">
                     Apply this concept immediately in the live browser Monaco code editor.
                   </p>
                 </div>
 
                 <button
                   onClick={() => handleCompleteActivity()}
-                  className="btn-pill-primary inline-flex items-center justify-center gap-2 text-xs shrink-0 px-6 py-2.5"
+                  className="btn btn-primary inline-flex items-center justify-center gap-2 text-xs shrink-0 px-6 py-2.5"
                 >
-                  <span>CONTINUE TO 03 BUILD</span>
+                  <span>Continue to 03 Build</span>
                   <span>↗</span>
                 </button>
               </div>
@@ -847,11 +847,11 @@ export const LessonWorkspacePage: React.FC = () => {
           {currentActivity?.type === 'CODE_EXAMPLE' && (
             <div className="max-w-4xl mx-auto p-6 sm:p-8 space-y-6">
               <div className="border-b border-subtle pb-4 space-y-1">
-                <span className="kicker block">
-                  › 03 BUILD / INTERACTIVE SNIPPET
+                <span className="text-xs font-semibold text-accent block">
+                  Phase 03 · Interactive Snippet
                 </span>
                 <h2 className="text-2xl font-bold text-primary tracking-tight">{currentActivity.title}</h2>
-                <p className="text-xs text-secondary font-sans mt-1">
+                <p className="text-xs text-secondary mt-1">
                   Modify the code example below and run it directly in the isolated sandbox.
                 </p>
               </div>
@@ -859,18 +859,18 @@ export const LessonWorkspacePage: React.FC = () => {
               {/* Interactive Code Editor Box */}
               <div className="craft-card p-0 overflow-hidden">
                 <div className="h-10 px-4 border-b border-subtle bg-surface-elevated flex items-center justify-between">
-                  <span className="text-xs font-mono font-bold text-muted">example.js</span>
+                  <span className="text-xs font-bold text-muted">example.js</span>
                   <button
                     onClick={() => handleRunCode(false)}
                     disabled={executingCode}
-                    className="btn-pill text-xs px-3 py-1 inline-flex items-center gap-1.5"
+                    className="btn btn-secondary text-xs px-3 py-1 inline-flex items-center gap-1.5"
                   >
                     {executingCode ? (
                       <Sparkles className="h-3 w-3 animate-spin" />
                     ) : (
                       <Play className="h-3 w-3 fill-current" />
                     )}
-                    <span>RUN CODE</span>
+                    <span>Run Code</span>
                   </button>
                 </div>
 
@@ -912,12 +912,12 @@ export const LessonWorkspacePage: React.FC = () => {
               </div>
 
               <div className="pt-6 border-t border-subtle flex items-center justify-between">
-                <span className="text-xs text-muted font-mono">Ready to practice what you learned?</span>
+                <span className="text-xs text-muted">Ready to practice what you learned?</span>
                 <button
                   onClick={() => handleCompleteActivity()}
-                  className="btn-pill-primary inline-flex items-center gap-2 text-xs"
+                  className="btn btn-primary inline-flex items-center gap-2 text-xs"
                 >
-                  <span>COMPLETE & CONTINUE</span>
+                  <span>Complete & Continue</span>
                   <span>↗</span>
                 </button>
               </div>
@@ -966,20 +966,20 @@ export const LessonWorkspacePage: React.FC = () => {
           {currentActivity?.type === 'QUIZ' && (
             <div className="max-w-3xl mx-auto p-6 sm:p-8 space-y-6">
               <div className="border-b border-subtle pb-4 space-y-1">
-                <span className="kicker block">
-                  › 04 SHIP / KNOWLEDGE ASSESSMENT
+                <span className="text-xs font-semibold text-accent block">
+                  Phase 04 · Knowledge Assessment
                 </span>
                 <h2 className="text-2xl font-bold text-primary tracking-tight">
                   {currentActivity.assessmentRef?.title || currentActivity.title}
                 </h2>
-                <p className="text-xs text-secondary font-sans">
+                <p className="text-xs text-secondary">
                   {currentActivity.assessmentRef?.description ||
                     'Answer the conceptual and code-prediction questions below to test your understanding. Passing with 70%+ marks this step complete.'}
                 </p>
               </div>
 
               {quizError && (
-                <div className="p-3.5 rounded-lg bg-danger/10 border border-danger/30 text-xs text-danger font-mono flex items-start gap-2">
+                <div className="p-3.5 rounded-lg bg-danger/10 border border-danger/30 text-xs text-danger flex items-start gap-2">
                   <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
                   <span>{quizError}</span>
                 </div>
@@ -995,11 +995,11 @@ export const LessonWorkspacePage: React.FC = () => {
                     className="craft-card p-6 space-y-4"
                   >
                     <div className="flex items-start gap-3">
-                      <span className="step-index">
+                      <span className="text-xs font-semibold text-accent shrink-0 mt-0.5">
                         0{idx + 1}
                       </span>
                       <div className="space-y-2 flex-1">
-                        <h3 className="text-sm font-bold text-primary leading-relaxed font-sans">
+                        <h3 className="text-sm font-bold text-primary leading-relaxed">
                           {q.question}
                         </h3>
 
@@ -1040,7 +1040,7 @@ export const LessonWorkspacePage: React.FC = () => {
                                 : 'bg-surface-elevated border-subtle text-secondary hover:text-primary hover:border-highlight'
                             }`}
                           >
-                            <span className="font-sans">{opt}</span>
+                            <span>{opt}</span>
                             <span
                               className={`h-3.5 w-3.5 rounded-full border flex items-center justify-center shrink-0 ml-2 ${
                                 isSelected ? 'border-main bg-main' : 'border-subtle'
@@ -1063,7 +1063,7 @@ export const LessonWorkspacePage: React.FC = () => {
                     quizResult.passed
                       ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
                       : 'bg-amber-500/10 border-amber-500/30 text-amber-400'
-                  } space-y-3 font-mono`}
+                  } space-y-3`}
                 >
                   <div className="flex items-center gap-3">
                     {quizResult.passed ? (
@@ -1073,7 +1073,7 @@ export const LessonWorkspacePage: React.FC = () => {
                     )}
                     <div>
                       <h4 className="font-bold text-sm text-primary">
-                        {quizResult.passed ? 'ASSESSMENT PASSED' : 'KNOWLEDGE REVIEW REQUIRED'}
+                        {quizResult.passed ? 'Assessment Passed' : 'Knowledge Review Required'}
                       </h4>
                       <p className="text-xs opacity-90 mt-0.5">
                         Score: {quizResult.score}% • Bar: 70%
@@ -1100,7 +1100,7 @@ export const LessonWorkspacePage: React.FC = () => {
 
               {/* Submit Button & Subtext */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-subtle">
-                <div className="text-xs text-muted font-mono flex items-center gap-1.5">
+                <div className="text-xs text-muted flex items-center gap-1.5">
                   <Info className="h-3.5 w-3.5 text-primary" />
                   <span>Passing score required: 70%</span>
                 </div>
@@ -1108,9 +1108,9 @@ export const LessonWorkspacePage: React.FC = () => {
                 <button
                   onClick={handleSubmitQuiz}
                   disabled={submittingQuiz || Object.keys(quizAnswers).length === 0}
-                  className="btn-pill-primary w-full sm:w-auto text-xs px-6 py-2.5"
+                  className="btn btn-primary w-full sm:w-auto text-xs px-6 py-2.5"
                 >
-                  <span>{submittingQuiz ? 'EVALUATING ANSWERS...' : 'SUBMIT ASSESSMENT'}</span>
+                  <span>{submittingQuiz ? 'Evaluating answers...' : 'Submit Assessment'}</span>
                   <span>↗</span>
                 </button>
               </div>
@@ -1136,10 +1136,10 @@ export const LessonWorkspacePage: React.FC = () => {
                   <div className="w-full lg:w-[45%] border-r border-subtle flex flex-col overflow-y-auto p-6 space-y-6 bg-surface">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="mono-tag text-[10px] text-primary">
-                          {activeChallenge.difficulty || 'BEGINNER'}
+                        <span className="tag-badge text-xs text-primary">
+                          {activeChallenge.difficulty || 'Beginner'}
                         </span>
-                        <span className="text-xs text-muted font-mono">
+                        <span className="text-xs text-muted">
                           Language: {activeChallenge.language || 'JavaScript'}
                         </span>
                       </div>
@@ -1147,8 +1147,8 @@ export const LessonWorkspacePage: React.FC = () => {
                     </div>
 
                     <div className="space-y-3">
-                      <span className="kicker block">
-                        › TASK SPECIFICATION
+                      <span className="text-xs font-semibold text-accent block">
+                        Task Specification
                       </span>
                       <div className="reading-surface">
                         <MarkdownRenderer content={activeChallenge.description || ''} />
@@ -1159,17 +1159,17 @@ export const LessonWorkspacePage: React.FC = () => {
                     {activeChallenge.testCases && activeChallenge.testCases.length > 0 && (
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="kicker block">
-                            › TARGET TEST CASES ({activeChallenge.testCases.length})
+                          <span className="text-xs font-semibold text-accent block">
+                            Target Test Cases ({activeChallenge.testCases.length})
                           </span>
-                          <span className="text-[10px] font-mono text-muted">SANDBOX VERIFIED</span>
+                          <span className="text-xs text-muted">Sandbox Verified</span>
                         </div>
 
                         <div className="space-y-2">
                           {activeChallenge.testCases.map((tc: any, i: number) => (
                             <div
                               key={tc.id || i}
-                              className="p-3.5 rounded-lg bg-surface-elevated border border-subtle space-y-1.5 text-xs font-mono"
+                              className="p-3.5 rounded-lg bg-surface-elevated border border-subtle space-y-1.5 text-xs"
                             >
                               <div className="text-primary font-bold flex items-center gap-1.5">
                                 <span className="text-primary">#{i + 1}</span>
@@ -1188,11 +1188,11 @@ export const LessonWorkspacePage: React.FC = () => {
                     {/* Hints */}
                     {activeChallenge.hints && activeChallenge.hints.length > 0 && (
                       <div className="p-4 rounded-xl border border-subtle bg-surface-elevated space-y-2">
-                        <div className="flex items-center gap-1.5 text-xs font-bold text-primary font-mono">
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-primary">
                           <Sparkles className="h-3.5 w-3.5 text-primary" />
-                          GUIDED HINTS
+                          Guided Hints
                         </div>
-                        <ul className="list-disc list-inside text-xs text-secondary space-y-1 font-sans">
+                        <ul className="list-disc list-inside text-xs text-secondary space-y-1">
                           {activeChallenge.hints.map((hint: string, hIdx: number) => (
                             <li key={hIdx}>{hint}</li>
                           ))}
@@ -1204,11 +1204,11 @@ export const LessonWorkspacePage: React.FC = () => {
                   {/* Right Column: Monaco Code Editor & Terminal */}
                   <div className="flex-1 flex flex-col overflow-hidden bg-surface-elevated">
                     {/* Editor Action Bar */}
-                    <div className="h-12 border-b border-subtle px-4 flex items-center justify-between bg-surface shrink-0 font-mono">
+                    <div className="h-12 border-b border-subtle px-4 flex items-center justify-between bg-surface shrink-0">
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-primary">solution.js</span>
-                        <span className="mono-tag text-[10px]">
-                          SANDBOX
+                        <span className="tag-badge text-xs">
+                          Sandbox
                         </span>
                       </div>
 
@@ -1216,10 +1216,10 @@ export const LessonWorkspacePage: React.FC = () => {
                         {/* Reset Code */}
                         <button
                           onClick={() => setCode(activeChallenge.starterCode || '')}
-                          className="btn-pill text-xs px-2.5 py-1 hidden sm:inline-flex items-center gap-1"
+                          className="btn btn-secondary text-xs px-2.5 py-1 hidden sm:inline-flex items-center gap-1"
                           title="Reset code to original starter template"
                         >
-                          <span>RESET</span>
+                          <span>Reset</span>
                         </button>
 
                         {/* Run Code Button */}
@@ -1227,10 +1227,10 @@ export const LessonWorkspacePage: React.FC = () => {
                           onClick={() => handleRunCode(false)}
                           disabled={executingCode}
                           title="Run against sample tests in isolated sandbox."
-                          className="btn-pill text-xs px-3 py-1 inline-flex items-center gap-1.5"
+                          className="btn btn-secondary text-xs px-3 py-1 inline-flex items-center gap-1.5"
                         >
                           <Play className="h-3 w-3 fill-current" />
-                          <span>RUN CODE</span>
+                          <span>Run Code</span>
                         </button>
 
                         {/* Submit Solution Button */}
@@ -1238,10 +1238,10 @@ export const LessonWorkspacePage: React.FC = () => {
                           onClick={() => handleRunCode(true)}
                           disabled={executingCode}
                           title="Submit solution for official evaluation & mark complete."
-                          className="btn-pill-primary text-xs px-3.5 py-1 inline-flex items-center gap-1.5"
+                          className="btn btn-primary text-xs px-3.5 py-1 inline-flex items-center gap-1.5"
                         >
                           <Send className="h-3 w-3" />
-                          <span>SUBMIT</span>
+                          <span>Submit</span>
                           <span>↗</span>
                         </button>
                       </div>
@@ -1302,9 +1302,9 @@ export const LessonWorkspacePage: React.FC = () => {
                             </div>
                             <button
                               onClick={() => handleCompleteActivity()}
-                              className="btn-pill-primary text-xs px-3 py-1 inline-flex items-center gap-1"
+                              className="btn btn-primary text-xs px-3 py-1 inline-flex items-center gap-1"
                             >
-                              <span>COMPLETE STEP</span>
+                              <span>Complete Step</span>
                               <span>↗</span>
                             </button>
                           </div>
@@ -1362,7 +1362,7 @@ export const LessonWorkspacePage: React.FC = () => {
                             </div>
                             <button
                               onClick={() => handleCompleteActivity()}
-                              className="btn-pill text-xs px-3 py-1 text-muted hover:text-primary shrink-0"
+                              className="btn btn-ghost text-xs px-3 py-1 text-muted hover:text-primary shrink-0"
                               title="Skip and mark step complete"
                             >
                               <span>Skip & Complete Step ↗</span>
